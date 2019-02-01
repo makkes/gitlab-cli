@@ -86,9 +86,7 @@ func (c APIClient) Get(path string) ([]byte, error) {
 		return nil, err
 	}
 	req.Header.Add("Private-Token", c.config.Token)
-	fmt.Println("do req")
 	resp, err := c.client.Do(req)
-	fmt.Println("got resp")
 	if err != nil {
 		return nil, err
 	}
