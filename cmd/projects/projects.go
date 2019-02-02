@@ -10,7 +10,8 @@ import (
 )
 
 func NewCommand(client api.APIClient) *cobra.Command {
-	return &cobra.Command{
+	var quiet *bool
+	cmd := &cobra.Command{
 		Use:   "projects",
 		Short: "List all your projects",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -26,7 +27,17 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				return
 			}
 
+			if *quiet {
+				for _, p := range projects {
+					fmt.Println(p.ID)
+				}
+				return
+			}
 			table.PrintProjects(projects)
 		},
 	}
+
+	quiet = cmd.Flags().BoolP("quiet", "q", false, "Only display numeric IDs")
+
+	return cmd
 }
