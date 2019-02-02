@@ -11,7 +11,7 @@ import (
 func NewCommand(client api.APIClient) *cobra.Command {
 	return &cobra.Command{
 		Use:   "project PROJECT",
-		Short: "List details about a project",
+		Short: "List details about a project by ID or name",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			projects, err := client.FindProject(args[0])

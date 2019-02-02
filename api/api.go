@@ -79,7 +79,16 @@ func (c *APIClient) Login(token string) (error, string) {
 }
 
 func (c APIClient) FindProject(name string) ([]Project, error) {
-	resp, err := c.Get("/users/${user}/projects/?search=" + url.QueryEscape(name))
+	resp, err := c.Get("/projects/" + url.PathEscape(name))
+	if err == nil {
+		var project Project
+		err = json.Unmarshal(resp, &project)
+		if err != nil {
+			return nil, err
+		}
+		return []Project{project}, nil
+	}
+	resp, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(name))
 	if err != nil {
 		return nil, err
 	}
