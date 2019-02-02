@@ -61,6 +61,23 @@ func (c APIClient) parse(input string) string {
 	return strings.Replace(input, "${user}", c.config.User, -1)
 }
 
+func (c *APIClient) Login(token string) (error, string) {
+	c.config.Token = token
+	res, err := c.Get("/user")
+	if err != nil {
+		return err, ""
+	}
+	var user struct {
+		Username string
+	}
+	err = json.Unmarshal(res, &user)
+	if err != nil {
+		return err, ""
+	}
+	c.config.User = user.Username
+	return nil, user.Username
+}
+
 func (c APIClient) FindProject(name string) ([]Project, error) {
 	resp, err := c.Get("/users/${user}/projects/?search=" + url.QueryEscape(name))
 	if err != nil {

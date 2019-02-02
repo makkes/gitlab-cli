@@ -15,27 +15,24 @@ type Config struct {
 	User  string
 }
 
+var defaultConfig = Config{}
+
 func Read() *Config {
 	bytes, err := ioutil.ReadFile(gitlabCLIConf())
 	if err != nil {
 		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
-		return nil
+		return &defaultConfig
 	}
 	var config Config
 	err = json.Unmarshal(bytes, &config)
 	if err != nil {
 		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
-		return nil
+		return &defaultConfig
 	}
 	return &config
 }
 
-func gitlabCLIConf() string {
-	return path.Join(os.Getenv("HOME"), configFile)
-}
-
-func WriteLoginCredentials(token, user string) {
-	c := Config{token, user}
+func (c *Config) Write() {
 	bytes, err := json.Marshal(c)
 	if err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
@@ -46,4 +43,9 @@ func WriteLoginCredentials(token, user string) {
 		fmt.Printf("Error writing configuration: %s\n", err)
 		return
 	}
+	fmt.Printf("Configuration stored in %s\n", gitlabCLIConf())
+}
+
+func gitlabCLIConf() string {
+	return path.Join(os.Getenv("HOME"), configFile)
 }
