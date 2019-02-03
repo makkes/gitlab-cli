@@ -19,6 +19,15 @@ All commands of gitlab-cli currently require that you are authenticated. To do
 so you issue `gitlab-cli login YOUR_TOKEN YOUR_USERNAME`. You obtain a personal
 access token at https://gitlab.com/profile/personal_access_tokens.
 
+## Commands
+
+Currently GitLab CLI supports these commands:
+
+* pipeline: List details of a pipeline
+* pipelines: List pipelines of a project
+* project:  List details about a project by ID or name
+* projects: List all your projects
+
 ## License
 
 This software is distributed under the BSD 2-Clause License, see
