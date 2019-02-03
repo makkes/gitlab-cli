@@ -40,12 +40,12 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 
 func calcPipelineColumnWidths(pipelines []api.PipelineDetails) map[string]int {
 	res := make(map[string]int)
-	res["id"] = 15
+	res["id"] = 20
 	res["status"] = 20
 	res["duration"] = 10
 	res["url"] = 50
 	for _, p := range pipelines {
-		w := len(strconv.Itoa(p.ID))
+		w := len(fmt.Sprintf("%d:%d", p.ProjectID, p.ID))
 		if w > res["id"] {
 			res["id"] = w
 		}
@@ -77,7 +77,7 @@ func PrintPipelines(ps []api.PipelineDetails) {
 		pad("URL", widths["url"]))
 	for _, p := range ps {
 		fmt.Printf("%s %s %s %s\n",
-			pad(strconv.Itoa(p.ID), widths["id"]),
+			pad(fmt.Sprintf("%d:%d", p.ProjectID, p.ID), widths["id"]),
 			pad(p.Status, widths["status"]),
 			pad(strconv.Itoa(p.Duration), widths["duration"]),
 			pad(p.URL, widths["url"]))

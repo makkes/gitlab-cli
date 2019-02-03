@@ -54,6 +54,7 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				if err != nil {
 					fmt.Println(err)
 				} else {
+					pd.ProjectID = project.ID
 					pds = append(pds, pd)
 				}
 			}

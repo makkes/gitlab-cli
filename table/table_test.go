@@ -23,7 +23,7 @@ func TestPipelineColumnWidths(t *testing.T) {
 			"empty input",
 			[]api.PipelineDetails{},
 			map[string]int{
-				"id":       15,
+				"id":       20,
 				"status":   20,
 				"duration": 10,
 				"url":      50,
@@ -33,7 +33,7 @@ func TestPipelineColumnWidths(t *testing.T) {
 			"nil input",
 			nil,
 			map[string]int{
-				"id":       15,
+				"id":       20,
 				"status":   20,
 				"duration": 10,
 				"url":      50,
@@ -50,7 +50,7 @@ func TestPipelineColumnWidths(t *testing.T) {
 				},
 			},
 			map[string]int{
-				"id":       15,
+				"id":       20,
 				"status":   45,
 				"url":      63,
 				"duration": 10,

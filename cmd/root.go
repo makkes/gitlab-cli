@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/makkes/gitlab-cli/cmd/pipeline"
 	"fmt"
 	"os"
 
@@ -22,6 +23,7 @@ func Execute(cfg *config.Config) {
 	rootCmd.AddCommand(projects.NewCommand(apiClient))
 	rootCmd.AddCommand(project.NewCommand(apiClient))
 	rootCmd.AddCommand(pipelines.NewCommand(apiClient))
+	rootCmd.AddCommand(pipeline.NewCommand(apiClient))
 	rootCmd.AddCommand(login.NewCommand(apiClient, cfg))
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

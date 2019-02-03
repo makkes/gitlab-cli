@@ -27,10 +27,11 @@ type Pipeline struct {
 }
 
 type PipelineDetails struct {
-	ID       int
-	Status   string
-	URL      string `json:"web_url"`
-	Duration int
+	ProjectID int
+	ID        int
+	Status    string
+	URL       string `json:"web_url"`
+	Duration  int
 }
 
 type Pipelines []Pipeline
@@ -79,6 +80,14 @@ func (c *APIClient) Login(token string) (error, string) {
 	}
 	c.config.User = user.Username
 	return nil, user.Username
+}
+
+func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, error) {
+	resp, err := c.Get(fmt.Sprintf("/projects/%s/pipelines/%s", url.PathEscape(projectID), url.PathEscape(pipelineID)))
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
 
 // FindProjectDetails searches for a project by its ID or its name,
