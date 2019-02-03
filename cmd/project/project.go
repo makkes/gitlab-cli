@@ -1,10 +1,12 @@
 package project
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/table"
 	"github.com/spf13/cobra"
 )
 
@@ -14,12 +16,15 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Short: "List details about a project by ID or name",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			projects, err := client.FindProject(args[0])
+			project, err := client.FindProjectDetails(args[0])
 			if err != nil {
 				fmt.Printf("Error finding project: %s\n", err)
 				return
 			}
-			table.PrintProjects(projects)
+			var out bytes.Buffer
+			json.Indent(&out, project, "", "    ")
+			out.WriteTo(os.Stdout)
+			fmt.Println()
 		},
 	}
 }

@@ -13,9 +13,12 @@ import (
 )
 
 type Project struct {
-	ID   int
-	Name string
-	URL  string `json:"web_url"`
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	SSHGitURL      string `json:"ssh_url_to_repo"`
+	HTTPGitURL     string `json:"http_url_to_repo"`
+	URL            string `json:"web_url"`
+	LastActivityAt string `json:"last_activity_at"`
 }
 
 type Pipeline struct {
@@ -78,27 +81,48 @@ func (c *APIClient) Login(token string) (error, string) {
 	return nil, user.Username
 }
 
-func (c APIClient) FindProject(name string) ([]Project, error) {
-	resp, err := c.Get("/projects/" + url.PathEscape(name))
+// FindProjectDetails searches for a project by its ID or its name,
+// with the ID having precedence over the name and returns the
+// raw JSON object as byte array.
+func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
+	// first try to find the project by its ID
+	resp, err := c.Get("/projects/" + url.PathEscape(nameOrID))
 	if err == nil {
-		var project Project
-		err = json.Unmarshal(resp, &project)
-		if err != nil {
-			return nil, err
-		}
-		return []Project{project}, nil
+		return resp, nil
 	}
-	resp, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(name))
+	// now try to find the project by name
+	resp, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(nameOrID))
 	if err != nil {
 		return nil, err
 	}
-	projects := make([]Project, 0)
+	projects := make([]map[string]interface{}, 0)
 	err = json.Unmarshal(resp, &projects)
 	if err != nil {
 		return nil, err
 	}
-	return projects, nil
+	if len(projects) <= 0 {
+		return nil, errors.New("No project found")
+	}
+	res, err := json.Marshal(projects[0])
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
 
+// FindProject searches for a project by its ID or its name,
+// with the ID having precedence over the name.
+func (c APIClient) FindProject(nameOrID string) (*Project, error) {
+	projectBytes, err := c.FindProjectDetails(nameOrID)
+	if err != nil {
+		return nil, err
+	}
+	var project Project
+	err = json.Unmarshal(projectBytes, &project)
+	if err != nil {
+		return nil, err
+	}
+	return &project, nil
 }
 
 var ErrNotLoggedIn error = errors.New("You are not logged in")

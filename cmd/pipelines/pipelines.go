@@ -18,17 +18,11 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Short: "List pipelines of a project",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			projects, err := client.FindProject(args[0])
+			project, err := client.FindProject(args[0])
 			if err != nil {
 				fmt.Printf("Error finding projects: %s\n", err)
 				return
 			}
-			if projects == nil {
-				fmt.Printf("Project '%s' not found\n", args[0])
-				return
-			}
-			// just pick the first one. Room for improvement on the selection algorithm.
-			project := projects[0]
 			resp, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines")
 			if err != nil {
 				fmt.Println(err)
