@@ -1,13 +1,14 @@
 package pipeline
 
 import (
-	"strings"
-	"os"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
+	"os"
+	"strings"
+
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.APIClient) *cobra.Command {
@@ -29,6 +30,7 @@ func NewCommand(client api.APIClient) *cobra.Command {
 			var out bytes.Buffer
 			json.Indent(&out, pipeline, "", "    ")
 			out.WriteTo(os.Stdout)
-			fmt.Println()},
+			fmt.Println()
+		},
 	}
 }

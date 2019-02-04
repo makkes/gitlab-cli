@@ -13,6 +13,7 @@ import (
 func NewCommand(client api.APIClient) *cobra.Command {
 	var all *bool
 	var recent *bool
+	var quiet *bool
 	cmd := &cobra.Command{
 		Use:   "pipelines PROJECT",
 		Short: "List pipelines of a project",
@@ -59,12 +60,19 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				}
 			}
 
+			if *quiet {
+				for _, p := range pds {
+					fmt.Printf("%d:%d\n", p.ProjectID, p.ID)
+				}
+				return
+			}
 			table.PrintPipelines(pds)
 		},
 	}
 
 	all = cmd.Flags().BoolP("all", "a", false, "Show all pipelines (default shows just running/pending.)")
 	recent = cmd.Flags().BoolP("recent", "r", false, "Show only the most recent pipeline")
+	quiet = cmd.Flags().BoolP("quiet", "q", false, "Only display numeric IDs")
 
 	return cmd
 }
