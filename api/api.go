@@ -48,17 +48,17 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 }
 
 type APIClient struct {
-	baseURL string
-	config  *config.Config
-	client  http.Client
+	basePath string
+	config   *config.Config
+	client   http.Client
 }
 
 func NewAPIClient(cfg *config.Config) APIClient {
 	client := http.Client{}
 	return APIClient{
-		baseURL: "https://gitlab.com/api/v4",
-		config:  cfg,
-		client:  client,
+		basePath: "/api/v4",
+		config:   cfg,
+		client:   client,
 	}
 }
 
@@ -66,8 +66,9 @@ func (c APIClient) parse(input string) string {
 	return strings.Replace(input, "${user}", c.config.User, -1)
 }
 
-func (c *APIClient) Login(token string) (error, string) {
+func (c *APIClient) Login(token, url string) (error, string) {
 	c.config.Token = token
+	c.config.URL = url
 	res, err := c.Get("/user")
 	if err != nil {
 		return err, ""
@@ -153,7 +154,7 @@ func (c APIClient) Get(path string) ([]byte, error) {
 	if c.config == nil {
 		return nil, ErrNotLoggedIn
 	}
-	req, err := http.NewRequest("GET", c.baseURL+c.parse(path), nil)
+	req, err := http.NewRequest("GET", c.config.URL+c.basePath+c.parse(path), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +164,7 @@ func (c APIClient) Get(path string) ([]byte, error) {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(fmt.Sprintf("Error querying GitLab, HTTP status is %d", resp.StatusCode))
+		return nil, fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

@@ -10,11 +10,15 @@ import (
 
 func NewCommand(client api.APIClient, cfg *config.Config) *cobra.Command {
 	return &cobra.Command{
-		Use:   "login TOKEN",
-		Short: "Login to Gitlab.com",
-		Args:  cobra.ExactArgs(1),
+		Use:   "login TOKEN [URL]",
+		Short: "Login to GitLab. If URL is omitted then https://gitlab.com is used.",
+		Args:  cobra.MaximumNArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			err, username := client.Login(args[0])
+			url := "https://gitlab.com"
+			if len(args) == 2 {
+				url = args[1]
+			}
+			err, username := client.Login(args[0], url)
 			if err != nil {
 				fmt.Printf("Error logging you in: %s\n", err)
 				return

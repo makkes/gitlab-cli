@@ -13,6 +13,7 @@ var configFile = ".gitlab-cli.json"
 
 type Config struct {
 	Token string
+	URL   string
 	User  string
 	Cache *Cache
 }
@@ -63,6 +64,13 @@ func Read() *Config {
 	}
 	if config.Cache == nil {
 		config.Cache = NewCache()
+	}
+
+	// this converts legacy configurations
+	if config.URL == "" {
+		fmt.Fprintf(os.Stderr, "Converting legacy configuration file to new format\n")
+		config.URL = "https://gitlab.com"
+		config.Write()
 	}
 	return &config
 }
