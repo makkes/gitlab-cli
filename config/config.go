@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -43,13 +44,16 @@ func Read() *Config {
 }
 
 func (c *Config) Write() {
-	bytes, err := json.Marshal(c)
+	unindented, err := json.Marshal(c)
 	if err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
 		return
 	}
-	bytes = append(bytes, '\n')
-	err = ioutil.WriteFile(gitlabCLIConf(), bytes, 0644)
+	var indented bytes.Buffer
+	if err := json.Indent(&indented, unindented, "", "  "); err != nil {
+		fmt.Printf("Error writing configuration: %s\n", err)
+	}
+	err = ioutil.WriteFile(gitlabCLIConf(), indented.Bytes(), 0644)
 	if err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
 		return
