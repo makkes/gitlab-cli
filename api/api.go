@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/makkes/gitlab-cli/config"
@@ -79,6 +80,7 @@ func (c *APIClient) Login(token string) (error, string) {
 		return err, ""
 	}
 	c.config.User = user.Username
+	c.config.Cache.Flush()
 	return nil, user.Username
 }
 
@@ -94,12 +96,21 @@ func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, err
 // with the ID having precedence over the name and returns the
 // raw JSON object as byte array.
 func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
-	// first try to find the project by its ID
+	// first try to get the project by its cached ID
+	if cachedID := c.config.Cache.Get("projects", nameOrID); cachedID != "" {
+		resp, err := c.Get("/projects/" + url.PathEscape(cachedID))
+		if err == nil {
+			return resp, nil
+		}
+	}
+
+	// then try to find the project by its ID
 	resp, err := c.Get("/projects/" + url.PathEscape(nameOrID))
 	if err == nil {
 		return resp, nil
 	}
-	// now try to find the project by name
+
+	// now try to find the project by name as a last resort
 	resp, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(nameOrID))
 	if err != nil {
 		return nil, err
@@ -112,6 +123,8 @@ func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	if len(projects) <= 0 {
 		return nil, errors.New("No project found")
 	}
+	c.config.Cache.Put("projects", nameOrID, strconv.Itoa(int((projects[0]["id"].(float64)))))
+	c.config.Write()
 	res, err := json.Marshal(projects[0])
 	if err != nil {
 		return nil, err

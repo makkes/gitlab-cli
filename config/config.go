@@ -13,9 +13,16 @@ var configFile = ".gitlab-cli.json"
 type Config struct {
 	Token string
 	User  string
+	Cache *Cache
 }
 
-var defaultConfig = Config{}
+var defaultConfig = Config{
+	Token: "",
+	User:  "",
+	Cache: &Cache{
+		data: make(map[string]map[string]string),
+	},
+}
 
 func Read() *Config {
 	bytes, err := ioutil.ReadFile(gitlabCLIConf())
@@ -29,6 +36,9 @@ func Read() *Config {
 		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
 		return &defaultConfig
 	}
+	if config.Cache == nil {
+		config.Cache = NewCache()
+	}
 	return &config
 }
 
@@ -38,6 +48,7 @@ func (c *Config) Write() {
 		fmt.Printf("Error writing configuration: %s\n", err)
 		return
 	}
+	bytes = append(bytes, '\n')
 	err = ioutil.WriteFile(gitlabCLIConf(), bytes, 0644)
 	if err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
