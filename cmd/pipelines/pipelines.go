@@ -35,6 +35,9 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				fmt.Println(err)
 				return
 			}
+			if len(pipelines) <= 0 {
+				return
+			}
 			if *recent {
 				pipelines = []api.Pipeline{pipelines[0]}
 			}
