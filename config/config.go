@@ -25,8 +25,32 @@ var defaultConfig = Config{
 	},
 }
 
+func checkPermissions(f *os.File) {
+	fi, err := f.Stat()
+	if err != nil {
+		fmt.Printf("Error checking file permissions: %s\n", err)
+	}
+	if fi.Mode() != 0600 {
+		fmt.Printf("Correcting configuration file permissions from %#o to %#o\n", fi.Mode(), 0600)
+		err = f.Chmod(0600)
+		if err != nil {
+			fmt.Printf("Error correcting configuration file permissions: %s\n", err)
+			return
+		}
+	}
+}
+
 func Read() *Config {
-	bytes, err := ioutil.ReadFile(gitlabCLIConf())
+	f, err := os.Open(gitlabCLIConf())
+	if err != nil {
+		fmt.Printf("Error opening configuration file: %s\n", err)
+		return &defaultConfig
+	}
+	defer f.Close()
+
+	checkPermissions(f)
+
+	bytes, err := ioutil.ReadAll(f)
 	if err != nil {
 		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
 		return &defaultConfig
@@ -53,12 +77,11 @@ func (c *Config) Write() {
 	if err := json.Indent(&indented, unindented, "", "  "); err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
 	}
-	err = ioutil.WriteFile(gitlabCLIConf(), indented.Bytes(), 0644)
+	err = ioutil.WriteFile(gitlabCLIConf(), indented.Bytes(), 0600)
 	if err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
 		return
 	}
-	fmt.Printf("Configuration stored in %s\n", gitlabCLIConf())
 }
 
 func gitlabCLIConf() string {
