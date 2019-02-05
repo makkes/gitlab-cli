@@ -24,7 +24,7 @@ type Project struct {
 
 type Issue struct {
 	ProjectID int    `json:"project_id"`
-	ID        int    `json:"id"`
+	ID        int    `json:"iid"`
 	Title     string `json:"title"`
 	URL       string `json:"web_url"`
 }
