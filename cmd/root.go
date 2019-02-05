@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 
 func Execute(cfg *config.Config) {
 	apiClient := api.NewAPIClient(cfg)
-	rootCmd.AddCommand(projects.NewCommand(apiClient))
+	rootCmd.AddCommand(projects.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(project.NewCommand(apiClient))
 	rootCmd.AddCommand(pipelines.NewCommand(apiClient))
 	rootCmd.AddCommand(pipeline.NewCommand(apiClient))

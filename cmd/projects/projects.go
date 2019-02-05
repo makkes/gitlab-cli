@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"text/template"
 
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/config"
 	"github.com/makkes/gitlab-cli/table"
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.APIClient, cfg *config.Config) *cobra.Command {
 	var quiet *bool
 	var format *string
 
@@ -30,6 +32,12 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				fmt.Println(err)
 				return
 			}
+
+			// put all project name => ID mappings into the cache
+			for _, p := range projects {
+				cfg.Cache.Put("projects", p.Name, strconv.Itoa(p.ID))
+			}
+			cfg.Write()
 
 			if *format != "" {
 				tmpl, err := template.New("").Parse(*format)
