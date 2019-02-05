@@ -13,12 +13,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func issuesCommand(args []string, client api.Client, out io.Writer) error {
+func issuesCommand(args []string, client api.Client, all bool, out io.Writer) error {
 	project, err := client.FindProject(args[0])
 	if err != nil {
 		return err
 	}
-	resp, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/issues?state=opened")
+	path := "/projects/" + strconv.Itoa(project.ID) + "/issues"
+	if !all {
+		path += "?state=opened"
+	}
+	resp, err := client.Get(path)
 	if err != nil {
 		return err
 	}
@@ -34,20 +38,19 @@ func issuesCommand(args []string, client api.Client, out io.Writer) error {
 }
 
 func NewCommand(client api.APIClient) *cobra.Command {
-	// var all *bool
+	var all *bool
 	cmd := &cobra.Command{
 		Use:   "issues PROJECT",
 		Short: "List issues in a project",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			err := issuesCommand(args, client, os.Stdout)
+			err := issuesCommand(args, client, *all, os.Stdout)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 			}
 		},
 	}
 
-	// all = cmd.Flags().BoolP("all", "a", false, "Show all issues (default shows just open)")
-
+	all = cmd.Flags().BoolP("all", "a", false, "Show all issues (default shows just open)")
 	return cmd
 }
