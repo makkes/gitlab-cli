@@ -22,6 +22,13 @@ type Project struct {
 	LastActivityAt string `json:"last_activity_at"`
 }
 
+type Issue struct {
+	ProjectID int    `json:"project_id"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	URL       string `json:"web_url"`
+}
+
 type Pipeline struct {
 	ID     int
 	Status string
@@ -49,6 +56,7 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 
 type Client interface {
 	Get(path string) ([]byte, error)
+	FindProject(nameOrID string) (*Project, error)
 }
 
 type APIClient struct {

@@ -1,8 +1,8 @@
 package table
 
 import (
-	"io"
 	"fmt"
+	"io"
 	"strconv"
 
 	"github.com/makkes/gitlab-cli/api"
@@ -69,6 +69,31 @@ func calcPipelineColumnWidths(pipelines []api.PipelineDetails) map[string]int {
 	return res
 }
 
+func calcIssueColumnWidths(issues []api.Issue) map[string]int {
+	res := make(map[string]int)
+	res["id"] = 20
+	res["title"] = 50
+	res["url"] = 50
+
+	for _, i := range issues {
+		w := len(fmt.Sprintf("%d:%d", i.ProjectID, i.ID))
+		if w > res["id"] {
+			res["id"] = w
+		}
+
+		w = len(i.Title)
+		if w > res["title"] {
+			res["title"] = w
+		}
+
+		w = len(i.URL)
+		if w > res["url"] {
+			res["url"] = w
+		}
+	}
+	return res
+}
+
 func PrintPipelines(ps []api.PipelineDetails) {
 	widths := calcPipelineColumnWidths(ps)
 	fmt.Printf("%s %s %s %s\n",
@@ -96,6 +121,21 @@ func PrintProjects(out io.Writer, ps []api.Project) {
 			pad(strconv.Itoa(p.ID), widths["id"]),
 			pad(p.Name, widths["name"]),
 			pad(p.URL, widths["url"]))
+
+	}
+}
+
+func PrintIssues(out io.Writer, issues []api.Issue) {
+	widths := calcIssueColumnWidths(issues)
+	fmt.Fprintf(out, "%s %s %s\n",
+		pad("ID", widths["id"]),
+		pad("TITLE", widths["title"]),
+		pad("URL", widths["url"]))
+	for _, i := range issues {
+		fmt.Fprintf(out, "%s %s %s\n",
+			pad(fmt.Sprintf("%d:%d", i.ProjectID, i.ID), widths["id"]),
+			pad(i.Title, widths["title"]),
+			pad(i.URL, widths["url"]))
 
 	}
 }
