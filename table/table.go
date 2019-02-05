@@ -1,6 +1,7 @@
 package table
 
 import (
+	"io"
 	"fmt"
 	"strconv"
 
@@ -84,14 +85,14 @@ func PrintPipelines(ps []api.PipelineDetails) {
 	}
 }
 
-func PrintProjects(ps []api.Project) {
+func PrintProjects(out io.Writer, ps []api.Project) {
 	widths := calcProjectColumnWidths(ps)
-	fmt.Printf("%s %s %s\n",
+	fmt.Fprintf(out, "%s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("NAME", widths["name"]),
 		pad("URL", widths["url"]))
 	for _, p := range ps {
-		fmt.Printf("%s %s %s\n",
+		fmt.Fprintf(out, "%s %s %s\n",
 			pad(strconv.Itoa(p.ID), widths["id"]),
 			pad(p.Name, widths["name"]),
 			pad(p.URL, widths["url"]))

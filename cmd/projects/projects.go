@@ -3,6 +3,7 @@ package projects
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"text/template"
@@ -13,7 +14,50 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient, cfg *config.Config) *cobra.Command {
+func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, out io.Writer) error {
+	resp, err := client.Get("/users/${user}/projects")
+	if err != nil {
+		return err
+	}
+	projects := make([]api.Project, 0)
+	err = json.Unmarshal(resp, &projects)
+	if err != nil {
+		return err
+	}
+
+	// put all project name => ID mappings into the cache
+	for _, p := range projects {
+		cfg.Cache().Put("projects", p.Name, strconv.Itoa(p.ID))
+	}
+	cfg.Write()
+
+	if format != "" {
+		tmpl, err := template.New("").Parse(format)
+		if err != nil {
+			return fmt.Errorf("template parsing error: %s", err)
+		}
+
+		for _, p := range projects {
+			err = tmpl.Execute(out, p)
+			if err != nil {
+				return fmt.Errorf("template parsing error: %s", err)
+			}
+			fmt.Fprintln(out)
+		}
+		return nil
+	}
+
+	if quiet {
+		for _, p := range projects {
+			fmt.Fprintln(out, p.ID)
+		}
+		return nil
+	}
+	table.PrintProjects(out, projects)
+	return nil
+}
+
+func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 	var quiet *bool
 	var format *string
 
@@ -21,48 +65,10 @@ func NewCommand(client api.APIClient, cfg *config.Config) *cobra.Command {
 		Use:   "projects",
 		Short: "List all your projects",
 		Run: func(cmd *cobra.Command, args []string) {
-			resp, err := client.Get("/users/${user}/projects")
+			err := projectsCommand(client, cfg, *quiet, *format, os.Stdout)
 			if err != nil {
-				fmt.Println(err)
-				return
+				fmt.Fprintf(os.Stderr, "%s\n", err)
 			}
-			projects := make([]api.Project, 0)
-			err = json.Unmarshal(resp, &projects)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			// put all project name => ID mappings into the cache
-			for _, p := range projects {
-				cfg.Cache.Put("projects", p.Name, strconv.Itoa(p.ID))
-			}
-			cfg.Write()
-
-			if *format != "" {
-				tmpl, err := template.New("").Parse(*format)
-				if err != nil {
-					fmt.Printf("Template parsing error: %s\n", err)
-					return
-				}
-				for _, p := range projects {
-					err = tmpl.Execute(os.Stdout, p)
-					if err != nil {
-						fmt.Printf("Template parsing error: %s\n", err)
-					} else {
-						fmt.Println()
-					}
-				}
-				return
-			}
-
-			if *quiet {
-				for _, p := range projects {
-					fmt.Println(p.ID)
-				}
-				return
-			}
-			table.PrintProjects(projects)
 		},
 	}
 

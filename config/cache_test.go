@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetOnEmptyCache(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	v := c.Get("does not", "exist")
 	if v != "" {
 		t.Errorf("Expected empty string and got %s", v)
@@ -13,7 +13,7 @@ func TestGetOnEmptyCache(t *testing.T) {
 }
 
 func TestPutAndGet(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	c.Put("c1", "k1", "v1")
 	v := c.Get("c1", "k1")
 	if v != "v1" {
@@ -21,7 +21,7 @@ func TestPutAndGet(t *testing.T) {
 	}
 }
 func TestFlush(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	c.Put("c1", "k1", "v1")
 	c.Flush()
 	if c.Get("c1", "k1") != "" {
@@ -29,7 +29,7 @@ func TestFlush(t *testing.T) {
 	}
 }
 func TestMarshalEmptyCache(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	bytes, err := c.MarshalJSON()
 
 	if err != nil {
@@ -41,7 +41,7 @@ func TestMarshalEmptyCache(t *testing.T) {
 }
 
 func TestMarshalPopulatedCache(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	c.Put("c1", "k1", "v1")
 	c.Put("c1", "k2", "v2")
 	c.Put("c2", "k1", "v1")
@@ -55,7 +55,7 @@ func TestMarshalPopulatedCache(t *testing.T) {
 	}
 }
 func TestUnmarshalPopulatedCache(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 
 	err := c.UnmarshalJSON([]byte(`{"c1":{"k1":"v1","k2":"v2"},"c2":{"k1":"v1"}}`))
 	if err != nil {
@@ -77,7 +77,7 @@ func TestUnmarshalPopulatedCache(t *testing.T) {
 }
 
 func TestUnmarshalBrokenJSON(t *testing.T) {
-	c := NewCache()
+	c := NewMapCache()
 	err := c.UnmarshalJSON([]byte(`broken`))
 	if err == nil {
 		t.Errorf("Expected non-nil error")

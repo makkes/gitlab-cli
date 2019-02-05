@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/makkes/gitlab-cli/cmd/pipeline"
 	"fmt"
 	"os"
+
+	"github.com/makkes/gitlab-cli/cmd/pipeline"
 
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/login"
@@ -18,7 +19,7 @@ var rootCmd = &cobra.Command{
 	Use: "gitlab-cli",
 }
 
-func Execute(cfg *config.Config) {
+func Execute(cfg config.Config) {
 	apiClient := api.NewAPIClient(cfg)
 	rootCmd.AddCommand(projects.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(project.NewCommand(apiClient))

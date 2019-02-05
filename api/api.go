@@ -47,13 +47,17 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 	return res
 }
 
+type Client interface {
+	Get(path string) ([]byte, error)
+}
+
 type APIClient struct {
 	basePath string
-	config   *config.Config
+	config   config.Config
 	client   http.Client
 }
 
-func NewAPIClient(cfg *config.Config) APIClient {
+func NewAPIClient(cfg config.Config) APIClient {
 	client := http.Client{}
 	return APIClient{
 		basePath: "/api/v4",
@@ -63,12 +67,12 @@ func NewAPIClient(cfg *config.Config) APIClient {
 }
 
 func (c APIClient) parse(input string) string {
-	return strings.Replace(input, "${user}", c.config.User, -1)
+	return strings.Replace(input, "${user}", c.config.Get(config.User), -1)
 }
 
 func (c *APIClient) Login(token, url string) (error, string) {
-	c.config.Token = token
-	c.config.URL = url
+	c.config.Set(config.Token, token)
+	c.config.Set(config.URL, url)
 	res, err := c.Get("/user")
 	if err != nil {
 		return err, ""
@@ -80,8 +84,8 @@ func (c *APIClient) Login(token, url string) (error, string) {
 	if err != nil {
 		return err, ""
 	}
-	c.config.User = user.Username
-	c.config.Cache.Flush()
+	c.config.Set(config.User, user.Username)
+	c.config.Cache().Flush()
 	return nil, user.Username
 }
 
@@ -98,7 +102,7 @@ func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, err
 // raw JSON object as byte array.
 func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	// first try to get the project by its cached ID
-	if cachedID := c.config.Cache.Get("projects", nameOrID); cachedID != "" {
+	if cachedID := c.config.Cache().Get("projects", nameOrID); cachedID != "" {
 		resp, err := c.Get("/projects/" + url.PathEscape(cachedID))
 		if err == nil {
 			return resp, nil
@@ -124,7 +128,7 @@ func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	if len(projects) <= 0 {
 		return nil, errors.New("No project found")
 	}
-	c.config.Cache.Put("projects", nameOrID, strconv.Itoa(int((projects[0]["id"].(float64)))))
+	c.config.Cache().Put("projects", nameOrID, strconv.Itoa(int((projects[0]["id"].(float64)))))
 	c.config.Write()
 	res, err := json.Marshal(projects[0])
 	if err != nil {
@@ -148,17 +152,17 @@ func (c APIClient) FindProject(nameOrID string) (*Project, error) {
 	return &project, nil
 }
 
-var ErrNotLoggedIn error = errors.New("You are not logged in")
+var ErrNotLoggedIn = errors.New("You are not logged in")
 
 func (c APIClient) Get(path string) ([]byte, error) {
 	if c.config == nil {
 		return nil, ErrNotLoggedIn
 	}
-	req, err := http.NewRequest("GET", c.config.URL+c.basePath+c.parse(path), nil)
+	req, err := http.NewRequest("GET", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Private-Token", c.config.Token)
+	req.Header.Add("Private-Token", c.config.Get(config.Token))
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err

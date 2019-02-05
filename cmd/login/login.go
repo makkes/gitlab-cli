@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient, cfg *config.Config) *cobra.Command {
+func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "login TOKEN [URL]",
 		Short: "Login to GitLab. If URL is omitted then https://gitlab.com is used.",
