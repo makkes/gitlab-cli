@@ -2,6 +2,7 @@ package table
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/makkes/gitlab-cli/api"
@@ -119,34 +120,28 @@ func TestProjectColumnWidths(t *testing.T) {
 	}
 }
 
-func TestIssueColumnWidths(t *testing.T) {
-	var issueColumnWidthTests = []struct {
-		name string
-		in   []api.Issue
-		out  map[string]int
+func TestIssuesTable(t *testing.T) {
+	var issuesTableTests = []struct {
+		name   string
+		writer *strings.Builder
+		issues []api.Issue
+		out    string
 	}{
 		{
 			"empty input",
+			&strings.Builder{},
 			[]api.Issue{},
-			map[string]int{
-				"id":    20,
-				"title": 30,
-				"state": 10,
-				"url":   50,
-			},
+			"ID                   TITLE                          STATE      URL                                               \n",
 		},
 		{
 			"nil input",
+			&strings.Builder{},
 			nil,
-			map[string]int{
-				"id":    20,
-				"title": 30,
-				"state": 10,
-				"url":   50,
-			},
+			"ID                   TITLE                          STATE      URL                                               \n",
 		},
 		{
 			"happy path",
+			&strings.Builder{},
 			[]api.Issue{
 				{
 					ID:    99,
@@ -155,24 +150,23 @@ func TestIssueColumnWidths(t *testing.T) {
 					URL:   "This is a uniform resource locator with more than 50 characters",
 				},
 			},
-			map[string]int{
-				"id":    20,
-				"title": 30,
-				"state": 21,
-				"url":   63,
-			},
+			`ID                   TITLE                          STATE                 URL                                                            
+0:99                 this is a name with more than… this is a loong state This is a uniform resource locator with more than 50 characters
+`,
 		},
 	}
 
-	for _, tt := range issueColumnWidthTests {
+	for _, tt := range issuesTableTests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := calcIssueColumnWidths(tt.in)
-			for k, v := range tt.out {
-				checkColumn(t, res, k, v)
+			PrintIssues(tt.writer, tt.issues)
+			if tt.writer.String() != tt.out {
+				t.Errorf("'%s'", strings.Split(tt.writer.String(), "\n")[1])
+				t.Errorf("Unexpected result: (%d) '%s'", len(tt.writer.String()), tt.writer.String())
 			}
 		})
 	}
 }
+
 func TestPad(t *testing.T) {
 	var padTable = []struct {
 		s   string
