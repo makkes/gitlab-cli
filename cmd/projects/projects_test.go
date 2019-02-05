@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/config"
 )
 
@@ -15,6 +16,10 @@ type mockClient struct {
 
 func (m mockClient) Get(path string) ([]byte, error) {
 	return m.res, m.err
+}
+
+func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {
+	return nil, nil
 }
 
 type mockCache struct {
