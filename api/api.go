@@ -27,6 +27,7 @@ type Issue struct {
 	ID        int    `json:"iid"`
 	Title     string `json:"title"`
 	URL       string `json:"web_url"`
+	State string `json:"state"`
 }
 
 type Pipeline struct {

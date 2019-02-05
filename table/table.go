@@ -72,7 +72,8 @@ func calcPipelineColumnWidths(pipelines []api.PipelineDetails) map[string]int {
 func calcIssueColumnWidths(issues []api.Issue) map[string]int {
 	res := make(map[string]int)
 	res["id"] = 20
-	res["title"] = 50
+	res["title"] = 30
+	res["state"] = 10
 	res["url"] = 50
 
 	for _, i := range issues {
@@ -81,9 +82,9 @@ func calcIssueColumnWidths(issues []api.Issue) map[string]int {
 			res["id"] = w
 		}
 
-		w = len(i.Title)
-		if w > res["title"] {
-			res["title"] = w
+		w = len(i.State)
+		if w > res["state"] {
+			res["state"] = w
 		}
 
 		w = len(i.URL)
@@ -127,14 +128,20 @@ func PrintProjects(out io.Writer, ps []api.Project) {
 
 func PrintIssues(out io.Writer, issues []api.Issue) {
 	widths := calcIssueColumnWidths(issues)
-	fmt.Fprintf(out, "%s %s %s\n",
+	fmt.Fprintf(out, "%s %s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("TITLE", widths["title"]),
+		pad("STATE", widths["state"]),
 		pad("URL", widths["url"]))
 	for _, i := range issues {
-		fmt.Fprintf(out, "%s %s %s\n",
+		title := i.Title
+		if len(title) > widths["title"] {
+			title = title[0:widths["title"]-1] + "…"
+		}
+		fmt.Fprintf(out, "%s %s %s %s\n",
 			pad(fmt.Sprintf("%d:%d", i.ProjectID, i.ID), widths["id"]),
-			pad(i.Title, widths["title"]),
+			pad(title, widths["title"]),
+			pad(i.State, widths["state"]),
 			pad(i.URL, widths["url"]))
 
 	}
