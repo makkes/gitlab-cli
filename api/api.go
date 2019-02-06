@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/makkes/gitlab-cli/config"
 )
@@ -36,11 +37,28 @@ type Pipeline struct {
 }
 
 type PipelineDetails struct {
-	ProjectID int
-	ID        int
-	Status    string
-	URL       string `json:"web_url"`
-	Duration  int
+	ProjectID        int
+	ID               int
+	Status           string
+	URL              string    `json:"web_url"`
+	RecordedDuration *int      `json:"duration"`
+	StartedAt        time.Time `json:"started_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
+	FinishedAt       time.Time `json:"finished_at"`
+}
+
+func (pd PipelineDetails) Duration() string {
+	if pd.Status == "running" {
+		started := pd.StartedAt
+		if !pd.FinishedAt.IsZero() {
+			started = pd.UpdatedAt
+		}
+		return time.Now().Sub(started).Truncate(time.Second).String()
+	}
+	if pd.RecordedDuration == nil {
+		return "-"
+	}
+	return time.Duration(int(time.Second) * *pd.RecordedDuration).String()
 }
 
 type Pipelines []Pipeline

@@ -44,10 +44,10 @@ func TestPipelineColumnWidths(t *testing.T) {
 			"happy path",
 			[]api.PipelineDetails{
 				{
-					ID:       99,
-					Status:   "this is a status with more than 20 characters",
-					URL:      "This is a uniform resource locator with more than 50 characters",
-					Duration: 50,
+					ID:               99,
+					Status:           "this is a status with more than 20 characters",
+					URL:              "This is a uniform resource locator with more than 50 characters",
+					RecordedDuration: func() *int { i := int(50); return &i }(),
 				},
 			},
 			map[string]int{
