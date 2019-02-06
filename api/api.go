@@ -28,7 +28,7 @@ type Issue struct {
 	ID        int    `json:"iid"`
 	Title     string `json:"title"`
 	URL       string `json:"web_url"`
-	State string `json:"state"`
+	State     string `json:"state"`
 }
 
 type Pipeline struct {
@@ -47,13 +47,13 @@ type PipelineDetails struct {
 	FinishedAt       time.Time `json:"finished_at"`
 }
 
-func (pd PipelineDetails) Duration() string {
+func (pd PipelineDetails) Duration(now time.Time) string {
 	if pd.Status == "running" {
 		started := pd.StartedAt
 		if !pd.FinishedAt.IsZero() {
 			started = pd.UpdatedAt
 		}
-		return time.Now().Sub(started).Truncate(time.Second).String()
+		return now.Sub(started).Truncate(time.Second).String()
 	}
 	if pd.RecordedDuration == nil {
 		return "-"

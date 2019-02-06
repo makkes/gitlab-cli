@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 
 	"github.com/makkes/gitlab-cli/api"
 )
@@ -39,7 +40,7 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 	return res
 }
 
-func calcPipelineColumnWidths(pipelines []api.PipelineDetails) map[string]int {
+func calcPipelineColumnWidths(pipelines []api.PipelineDetails, now time.Time) map[string]int {
 	res := make(map[string]int)
 	res["id"] = 20
 	res["status"] = 20
@@ -56,7 +57,7 @@ func calcPipelineColumnWidths(pipelines []api.PipelineDetails) map[string]int {
 			res["status"] = w
 		}
 
-		w = len(p.Duration())
+		w = len(p.Duration(now))
 		if w > res["duration"] {
 			res["duration"] = w
 		}
@@ -96,7 +97,7 @@ func calcIssueColumnWidths(issues []api.Issue) map[string]int {
 }
 
 func PrintPipelines(ps []api.PipelineDetails) {
-	widths := calcPipelineColumnWidths(ps)
+	widths := calcPipelineColumnWidths(ps, time.Now())
 	fmt.Printf("%s %s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("STATUS", widths["status"]),
@@ -106,7 +107,7 @@ func PrintPipelines(ps []api.PipelineDetails) {
 		fmt.Printf("%s %s %s %s\n",
 			pad(fmt.Sprintf("%d:%d", p.ProjectID, p.ID), widths["id"]),
 			pad(p.Status, widths["status"]),
-			pad(p.Duration(), widths["duration"]),
+			pad(p.Duration(time.Now()), widths["duration"]),
 			pad(p.URL, widths["url"]))
 	}
 }

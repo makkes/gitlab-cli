@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/makkes/gitlab-cli/api"
 )
@@ -61,7 +62,7 @@ func TestPipelineColumnWidths(t *testing.T) {
 
 	for _, tt := range pipelineColumnWidthTests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := calcPipelineColumnWidths(tt.in)
+			res := calcPipelineColumnWidths(tt.in, time.Now())
 			for k, v := range tt.out {
 				checkColumn(t, res, k, v)
 			}
