@@ -7,11 +7,12 @@ import (
 	"os"
 
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/cmd/project/create"
 	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.APIClient) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "project PROJECT",
 		Short: "List details about a project by ID or name",
 		Args:  cobra.ExactArgs(1),
@@ -27,4 +28,8 @@ func NewCommand(client api.APIClient) *cobra.Command {
 			fmt.Println()
 		},
 	}
+
+	cmd.AddCommand(create.NewCommand(client))
+
+	return cmd
 }

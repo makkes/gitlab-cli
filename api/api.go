@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -75,6 +76,7 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 
 type Client interface {
 	Get(path string) ([]byte, error)
+	Post(path string, body io.Reader) ([]byte, error)
 	FindProject(nameOrID string) (*Project, error)
 }
 
@@ -195,6 +197,29 @@ func (c APIClient) Get(path string) ([]byte, error) {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, error) {
+	if c.config == nil {
+		return nil, ErrNotLoggedIn
+	}
+	req, err := http.NewRequest("POST", c.config.Get(config.URL)+c.basePath+c.parse(path), reqBody)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Private-Token", c.config.Get(config.Token))
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return nil, fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
