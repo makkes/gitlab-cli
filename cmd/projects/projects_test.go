@@ -2,6 +2,7 @@ package projects
 
 import (
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 
@@ -15,6 +16,10 @@ type mockClient struct {
 }
 
 func (m mockClient) Get(path string) ([]byte, error) {
+	return m.res, m.err
+}
+
+func (m mockClient) Post(path string, body io.Reader) ([]byte, error) {
 	return m.res, m.err
 }
 
