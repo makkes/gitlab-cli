@@ -23,6 +23,10 @@ func (m mockClient) Post(path string, body io.Reader) ([]byte, error) {
 	return m.res, m.err
 }
 
+func (m mockClient) Delete(path string) error {
+	return m.err
+}
+
 func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {
 	return nil, nil
 }
@@ -195,9 +199,9 @@ func TestTableOutput(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != `ID              NAME                                     URL                                               
-123             broken arrow                                                                               
-456             almanac                                                                                    
+	if out.String() != `ID              NAME                                     URL                                                CLONE                                             
+123             broken arrow                                                                                                                                  
+456             almanac                                                                                                                                       
 ` {
 		t.Errorf("Unexpected output '%s'", out.String())
 	}
@@ -215,7 +219,7 @@ func TestEmptyTableOutput(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != "ID              NAME                                     URL                                               \n" {
+	if out.String() != "ID              NAME                                     URL                                                CLONE                                             \n" {
 		t.Errorf("Unexpected output '%s'", out.String())
 	}
 }
