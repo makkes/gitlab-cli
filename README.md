@@ -28,10 +28,12 @@ Currently GitLab CLI supports these commands:
 * `projects`: List all your projects
 * `project`:  List details about a project by ID or name
 * `project create`: Create a new project
+* `var`: Manage project variables
 * `pipelines`: List pipelines of a project
 * `pipeline`: List details of a pipeline
 * `issues`: List all issues of a project
-* `issue inspect`: List details about an issue
+* `issue`: Manage issues
+* `status`: Display the current configuration of GitLab CLI
 
 ## License
 

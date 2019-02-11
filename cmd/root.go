@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/makkes/gitlab-cli/cmd/status"
+
 	"github.com/makkes/gitlab-cli/cmd/variable"
 
 	"github.com/makkes/gitlab-cli/cmd/issue"
@@ -35,6 +37,7 @@ func Execute(cfg config.Config) {
 	rootCmd.AddCommand(issues.NewCommand(apiClient))
 	rootCmd.AddCommand(issue.NewCommand(apiClient))
 	rootCmd.AddCommand(variable.NewCommand(apiClient))
+	rootCmd.AddCommand(status.NewCommand(apiClient, cfg))
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

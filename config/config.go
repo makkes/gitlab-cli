@@ -98,7 +98,7 @@ func checkPermissions(f *os.File) {
 func Read() Config {
 	f, err := os.Open(gitlabCLIConf())
 	if err != nil {
-		fmt.Printf("Error opening configuration file: %s\n", err)
+		fmt.Printf("WARNING: Error opening configuration file: %s\n\n", err)
 		return &defaultConfig
 	}
 	defer f.Close()
@@ -107,13 +107,13 @@ func Read() Config {
 
 	bytes, err := ioutil.ReadAll(f)
 	if err != nil {
-		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
+		fmt.Printf("WARNING: Error reading configuration: %s\n\n", err)
 		return &defaultConfig
 	}
 	var config inMemoryConfig
 	err = json.Unmarshal(bytes, &config)
 	if err != nil {
-		fmt.Printf("WARNING: Error reading configuration: %s\n", err)
+		fmt.Printf("WARNING: Error reading configuration: %s\n\n", err)
 		return &defaultConfig
 	}
 
@@ -125,7 +125,7 @@ func Read() Config {
 		var oldConfig map[string]interface{}
 		err = json.Unmarshal(bytes, &oldConfig)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading legacy configuration file: %s\n", err)
+			fmt.Fprintf(os.Stderr, "WARNING: Error reading legacy configuration file: %s\n", err)
 			return &defaultConfig
 		}
 		config.cfg = map[string]string{
