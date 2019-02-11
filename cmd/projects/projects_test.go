@@ -23,6 +23,10 @@ func (m mockClient) Post(path string, body io.Reader) ([]byte, error) {
 	return m.res, m.err
 }
 
+func (m mockClient) Delete(path string) error {
+	return m.err
+}
+
 func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {
 	return nil, nil
 }
