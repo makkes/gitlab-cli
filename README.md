@@ -25,12 +25,13 @@ at https://gitlab.com/profile/personal_access_tokens.
 
 Currently GitLab CLI supports these commands:
 
-* pipeline: List details of a pipeline
-* pipelines: List pipelines of a project
-* project:  List details about a project by ID or name
-* projects: List all your projects
-* issues: List all issues of a project
-* issue inspect: List details about an issue
+* `projects`: List all your projects
+* `project`:  List details about a project by ID or name
+* `project create`: Create a new project
+* `pipelines`: List pipelines of a project
+* `pipeline`: List details of a pipeline
+* `issues`: List all issues of a project
+* `issue inspect`: List details about an issue
 
 ## License
 
