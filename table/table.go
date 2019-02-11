@@ -96,6 +96,26 @@ func calcIssueColumnWidths(issues []api.Issue) map[string]int {
 	return res
 }
 
+func calcVarColumnWidths(vars []api.Var) map[string]int {
+	res := make(map[string]int)
+	res["key"] = 20
+	res["value"] = 40
+	res["protected"] = 7
+
+	for _, v := range vars {
+		w := len(v.Key)
+		if w > res["key"] {
+			res["key"] = w
+		}
+
+		w = len(v.Value)
+		if w > res["value"] {
+			res["value"] = w
+		}
+	}
+	return res
+}
+
 func PrintPipelines(ps []api.PipelineDetails) {
 	widths := calcPipelineColumnWidths(ps, time.Now())
 	fmt.Printf("%s %s %s %s\n",
@@ -144,6 +164,21 @@ func PrintIssues(out io.Writer, issues []api.Issue) {
 			pad(title, widths["title"]),
 			pad(i.State, widths["state"]),
 			pad(i.URL, widths["url"]))
+
+	}
+}
+
+func PrintVars(out io.Writer, vars []api.Var) {
+	widths := calcVarColumnWidths(vars)
+	fmt.Fprintf(out, "%s %s %s\n",
+		pad("KEY", widths["key"]),
+		pad("VALUE", widths["value"]),
+		pad("PROTECTED", widths["protected"]))
+	for _, v := range vars {
+		fmt.Fprintf(out, "%s %s %s\n",
+			pad(v.Key, widths["key"]),
+			pad(v.Value, widths["value"]),
+			pad(fmt.Sprintf("%t", v.Protected), widths["protected"]))
 
 	}
 }

@@ -48,6 +48,12 @@ type PipelineDetails struct {
 	FinishedAt       time.Time `json:"finished_at"`
 }
 
+type Var struct {
+	Key       string
+	Value     string
+	Protected bool
+}
+
 func (pd PipelineDetails) Duration(now time.Time) string {
 	if pd.Status == "running" {
 		started := pd.StartedAt
@@ -77,6 +83,7 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 type Client interface {
 	Get(path string) ([]byte, error)
 	Post(path string, body io.Reader) ([]byte, error)
+	Delete(path string) error
 	FindProject(nameOrID string) (*Project, error)
 }
 
@@ -227,4 +234,23 @@ func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, error) {
 		return nil, err
 	}
 	return body, nil
+}
+
+func (c APIClient) Delete(path string) error {
+	if c.config == nil {
+		return ErrNotLoggedIn
+	}
+	req, err := http.NewRequest("DELETE", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Private-Token", c.config.Get(config.Token))
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
+	}
+	return nil
 }
