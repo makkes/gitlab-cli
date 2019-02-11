@@ -2,7 +2,6 @@ package issues
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -22,7 +21,7 @@ func issuesCommand(args []string, client api.Client, all bool, out io.Writer) er
 	if !all {
 		path += "?state=opened"
 	}
-	resp, err := client.Get(path)
+	resp, _, err := client.Get(path)
 	if err != nil {
 		return err
 	}
@@ -43,11 +42,8 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Use:   "issues PROJECT",
 		Short: "List issues in a project",
 		Args:  cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
-			err := issuesCommand(args, client, *all, os.Stdout)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s\n", err)
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return issuesCommand(args, client, *all, os.Stdout)
 		},
 	}
 

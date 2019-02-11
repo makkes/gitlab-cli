@@ -16,16 +16,16 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Use:   "project PROJECT",
 		Short: "List details about a project by ID or name",
 		Args:  cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			project, err := client.FindProjectDetails(args[0])
 			if err != nil {
-				fmt.Printf("Error finding project: %s\n", err)
-				return
+				return fmt.Errorf("Cannot show project: %s", err)
 			}
 			var out bytes.Buffer
 			json.Indent(&out, project, "", "    ")
 			out.WriteTo(os.Stdout)
 			fmt.Println()
+			return nil
 		},
 	}
 

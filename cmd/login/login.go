@@ -13,18 +13,18 @@ func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 		Use:   "login TOKEN [URL]",
 		Short: "Login to GitLab. If URL is omitted then https://gitlab.com is used.",
 		Args:  cobra.RangeArgs(1, 2),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			url := "https://gitlab.com"
 			if len(args) == 2 {
 				url = args[1]
 			}
 			err, username := client.Login(args[0], url)
 			if err != nil {
-				fmt.Printf("Error logging you in: %s\n", err)
-				return
+				return fmt.Errorf("Cannot login: %s", err)
 			}
 			fmt.Printf("Logged in as %s\n", username)
 			cfg.Write()
+			return nil
 		},
 	}
 }

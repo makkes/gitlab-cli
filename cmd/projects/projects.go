@@ -15,9 +15,12 @@ import (
 )
 
 func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, out io.Writer) error {
-	resp, err := client.Get("/users/${user}/projects")
+	resp, status, err := client.Get("/users/${user}/projects")
 	if err != nil {
-		return err
+		if status == 404 {
+			return fmt.Errorf("Cannot list projects: User %s not found. Check your configuration!", cfg.Get("user"))
+		}
+		return fmt.Errorf("Cannot list projects: %s", err)
 	}
 	projects := make([]api.Project, 0)
 	err = json.Unmarshal(resp, &projects)
@@ -64,11 +67,12 @@ func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "projects",
 		Short: "List all your projects",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			err := projectsCommand(client, cfg, *quiet, *format, os.Stdout)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s\n", err)
+				return err
 			}
+			return nil
 		},
 	}
 

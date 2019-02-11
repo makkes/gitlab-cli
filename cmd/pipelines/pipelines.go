@@ -18,32 +18,28 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Use:   "pipelines PROJECT",
 		Short: "List pipelines of a project",
 		Args:  cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			project, err := client.FindProject(args[0])
 			if err != nil {
-				fmt.Printf("Error finding projects: %s\n", err)
-				return
+				return fmt.Errorf("Cannot list pipelines: %s", err)
 			}
-			resp, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines")
+			resp, _, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines")
 			if err != nil {
-				fmt.Println(err)
-				return
+				return err
 			}
 			var pipelines api.Pipelines
 			err = json.Unmarshal(resp, &pipelines)
 			if err != nil {
-				fmt.Println(err)
-				return
+				return err
 			}
 			if len(pipelines) <= 0 {
-				return
+				return nil
 			}
 			if *recent {
 				pipelines = []api.Pipeline{pipelines[0]}
 			}
 			if len(pipelines) <= 0 {
-				fmt.Printf("No pipelines found for project '%s'\n", args[0])
-				return
+				return fmt.Errorf("No pipelines found for project '%s'", args[0])
 			}
 
 			filteredPipelines := pipelines.Filter(func(p api.Pipeline) bool {
@@ -52,7 +48,7 @@ func NewCommand(client api.APIClient) *cobra.Command {
 
 			pds := make([]api.PipelineDetails, 0)
 			for _, p := range filteredPipelines {
-				resp, err = client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines/" + strconv.Itoa(p.ID))
+				resp, _, err = client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines/" + strconv.Itoa(p.ID))
 				var pd api.PipelineDetails
 				err = json.Unmarshal(resp, &pd)
 				if err != nil {
@@ -67,9 +63,10 @@ func NewCommand(client api.APIClient) *cobra.Command {
 				for _, p := range pds {
 					fmt.Printf("%d:%d\n", p.ProjectID, p.ID)
 				}
-				return
+				return nil
 			}
 			table.PrintPipelines(pds)
+			return nil
 		},
 	}
 

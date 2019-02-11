@@ -15,16 +15,16 @@ type mockClient struct {
 	err error
 }
 
-func (m mockClient) Get(path string) ([]byte, error) {
-	return m.res, m.err
+func (m mockClient) Get(path string) ([]byte, int, error) {
+	return m.res, 0, m.err
 }
 
-func (m mockClient) Post(path string, body io.Reader) ([]byte, error) {
-	return m.res, m.err
+func (m mockClient) Post(path string, body io.Reader) ([]byte, int, error) {
+	return m.res, 0, m.err
 }
 
-func (m mockClient) Delete(path string) error {
-	return m.err
+func (m mockClient) Delete(path string) (int, error) {
+	return 0, m.err
 }
 
 func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {

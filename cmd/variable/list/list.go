@@ -17,25 +17,24 @@ func NewCommand(client api.APIClient) *cobra.Command {
 		Use:   "list PROJECT",
 		Short: "List a project's variables",
 		Args:  cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			project, err := client.FindProject(args[0])
 			if err != nil {
-				fmt.Printf("Error finding project: %s\n", err)
-				return
+				return fmt.Errorf("Cannot list variables: %s", err)
 			}
-			res, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/variables")
+			res, _, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/variables")
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating variable: %s\n", err)
-				return
+				return fmt.Errorf("Cannot list variables: %s", err)
 			}
 
 			vars := make([]api.Var, 0)
 			err = json.Unmarshal(res, &vars)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error querying variables: %s\n", err)
+				return fmt.Errorf("Cannot list variables: %s", err)
 			}
 
 			table.PrintVars(os.Stdout, vars)
+			return nil
 		},
 	}
 }

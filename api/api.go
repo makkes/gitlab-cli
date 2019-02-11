@@ -81,9 +81,9 @@ func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
 }
 
 type Client interface {
-	Get(path string) ([]byte, error)
-	Post(path string, body io.Reader) ([]byte, error)
-	Delete(path string) error
+	Get(path string) ([]byte, int, error)
+	Post(path string, body io.Reader) ([]byte, int, error)
+	Delete(path string) (int, error)
 	FindProject(nameOrID string) (*Project, error)
 }
 
@@ -109,7 +109,7 @@ func (c APIClient) parse(input string) string {
 func (c *APIClient) Login(token, url string) (error, string) {
 	c.config.Set(config.Token, token)
 	c.config.Set(config.URL, url)
-	res, err := c.Get("/user")
+	res, _, err := c.Get("/user")
 	if err != nil {
 		return err, ""
 	}
@@ -126,7 +126,7 @@ func (c *APIClient) Login(token, url string) (error, string) {
 }
 
 func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, error) {
-	resp, err := c.Get(fmt.Sprintf("/projects/%s/pipelines/%s", url.PathEscape(projectID), url.PathEscape(pipelineID)))
+	resp, _, err := c.Get(fmt.Sprintf("/projects/%s/pipelines/%s", url.PathEscape(projectID), url.PathEscape(pipelineID)))
 	if err != nil {
 		return nil, err
 	}
@@ -139,20 +139,20 @@ func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, err
 func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	// first try to get the project by its cached ID
 	if cachedID := c.config.Cache().Get("projects", nameOrID); cachedID != "" {
-		resp, err := c.Get("/projects/" + url.PathEscape(cachedID))
+		resp, _, err := c.Get("/projects/" + url.PathEscape(cachedID))
 		if err == nil {
 			return resp, nil
 		}
 	}
 
 	// then try to find the project by its ID
-	resp, err := c.Get("/projects/" + url.PathEscape(nameOrID))
+	resp, _, err := c.Get("/projects/" + url.PathEscape(nameOrID))
 	if err == nil {
 		return resp, nil
 	}
 
 	// now try to find the project by name as a last resort
-	resp, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(nameOrID))
+	resp, _, err = c.Get("/users/${user}/projects/?search=" + url.QueryEscape(nameOrID))
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 		return nil, err
 	}
 	if len(projects) <= 0 {
-		return nil, errors.New("No project found")
+		return nil, fmt.Errorf("Project '%s' not found", nameOrID)
 	}
 	c.config.Cache().Put("projects", nameOrID, strconv.Itoa(int((projects[0]["id"].(float64)))))
 	c.config.Write()
@@ -190,67 +190,68 @@ func (c APIClient) FindProject(nameOrID string) (*Project, error) {
 
 var ErrNotLoggedIn = errors.New("You are not logged in")
 
-func (c APIClient) Get(path string) ([]byte, error) {
+func (c APIClient) Get(path string) ([]byte, int, error) {
 	if c.config == nil {
-		return nil, ErrNotLoggedIn
+		return nil, 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("GET", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	req.Header.Add("Private-Token", c.config.Get(config.Token))
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
+		return nil, resp.StatusCode, fmt.Errorf("%s", resp.Status)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, resp.StatusCode, err
 	}
-	return body, nil
+	return body, 0, nil
 }
 
-func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, error) {
+func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
 	if c.config == nil {
-		return nil, ErrNotLoggedIn
+		return nil, 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("POST", c.config.Get(config.URL)+c.basePath+c.parse(path), reqBody)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	req.Header.Add("Private-Token", c.config.Get(config.Token))
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return nil, fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
+		return nil, resp.StatusCode, fmt.Errorf("%s", resp.Status)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return body, nil
+	return body, 0, nil
 }
 
-func (c APIClient) Delete(path string) error {
+func (c APIClient) Delete(path string) (int, error) {
 	if c.config == nil {
-		return ErrNotLoggedIn
+		return 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("DELETE", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	req.Header.Add("Private-Token", c.config.Get(config.Token))
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		return 0, err
 	}
+
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Error querying GitLab, HTTP status is %d", resp.StatusCode)
+		return resp.StatusCode, fmt.Errorf("%s", resp.Status)
 	}
-	return nil
+	return resp.StatusCode, nil
 }
