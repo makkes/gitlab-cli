@@ -80,18 +80,20 @@ func TestProjectColumnWidths(t *testing.T) {
 			"empty input",
 			[]api.Project{},
 			map[string]int{
-				"id":   15,
-				"name": 40,
-				"url":  50,
+				"id":    15,
+				"name":  40,
+				"url":   50,
+				"clone": 50,
 			},
 		},
 		{
 			"nil input",
 			nil,
 			map[string]int{
-				"id":   15,
-				"name": 40,
-				"url":  50,
+				"id":    15,
+				"name":  40,
+				"url":   50,
+				"clone": 50,
 			},
 		},
 		{
@@ -104,9 +106,10 @@ func TestProjectColumnWidths(t *testing.T) {
 				},
 			},
 			map[string]int{
-				"id":   15,
-				"name": 43,
-				"url":  63,
+				"id":    15,
+				"name":  43,
+				"url":   63,
+				"clone": 50,
 			},
 		},
 	}
@@ -114,6 +117,9 @@ func TestProjectColumnWidths(t *testing.T) {
 	for _, tt := range projectColumnWidthTests {
 		t.Run(tt.name, func(t *testing.T) {
 			res := calcProjectColumnWidths(tt.in)
+			if len(res) != len(tt.out) {
+				t.Errorf("Expected map with %d entries but got %d", len(tt.out), len(res))
+			}
 			for k, v := range tt.out {
 				checkColumn(t, res, k, v)
 			}

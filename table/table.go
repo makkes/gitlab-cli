@@ -21,6 +21,7 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 	res["id"] = 15
 	res["name"] = 40
 	res["url"] = 50
+	res["clone"] = 50
 	for _, p := range ps {
 		w := len(strconv.Itoa(p.ID))
 		if w > res["id"] {
@@ -35,6 +36,11 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 		w = len(p.URL)
 		if w > res["url"] {
 			res["url"] = w
+		}
+
+		w = len(p.SSHGitURL)
+		if w > res["clone"] {
+			res["clone"] = w
 		}
 	}
 	return res
@@ -114,15 +120,17 @@ func PrintPipelines(ps []api.PipelineDetails) {
 
 func PrintProjects(out io.Writer, ps []api.Project) {
 	widths := calcProjectColumnWidths(ps)
-	fmt.Fprintf(out, "%s %s %s\n",
+	fmt.Fprintf(out, "%s %s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("NAME", widths["name"]),
-		pad("URL", widths["url"]))
+		pad("URL", widths["url"]),
+		pad("CLONE", widths["clone"]))
 	for _, p := range ps {
-		fmt.Fprintf(out, "%s %s %s\n",
+		fmt.Fprintf(out, "%s %s %s %s\n",
 			pad(strconv.Itoa(p.ID), widths["id"]),
 			pad(p.Name, widths["name"]),
-			pad(p.URL, widths["url"]))
+			pad(p.URL, widths["url"]),
+			pad(p.SSHGitURL, widths["clone"]))
 
 	}
 }
