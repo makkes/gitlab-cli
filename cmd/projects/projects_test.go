@@ -11,12 +11,13 @@ import (
 )
 
 type mockClient struct {
-	res []byte
-	err error
+	res    []byte
+	status int
+	err    error
 }
 
 func (m mockClient) Get(path string) ([]byte, int, error) {
-	return m.res, 0, m.err
+	return m.res, m.status, m.err
 }
 
 func (m mockClient) Post(path string, body io.Reader) ([]byte, int, error) {
@@ -33,6 +34,7 @@ func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {
 
 type mockCache struct {
 	calls [][]string
+	cache map[string]map[string]string
 }
 
 func (c mockCache) Flush() {}
@@ -50,6 +52,7 @@ func (c *mockCache) Put(cacheName, key, value string) {
 
 type mockConfig struct {
 	cache      config.Cache
+	cfg        map[string]string
 	writeCalls int
 }
 
@@ -62,7 +65,7 @@ func (c *mockConfig) Write() {
 }
 
 func (c mockConfig) Get(key string) string {
-	return ""
+	return c.cfg[key]
 }
 
 func (c mockConfig) Set(key, value string) {}
@@ -79,10 +82,36 @@ func TestClientError(t *testing.T) {
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
+	if err.Error() != "Cannot list projects: Some client error" {
+		t.Errorf("Unexpected error message '%s'", err)
+	}
 	if out.String() != "" {
 		t.Errorf("Expected output to be empty but it is '%s'", out.String())
 	}
 }
+
+func TestUnknownProject(t *testing.T) {
+	var out strings.Builder
+	client := mockClient{
+		status: 404,
+		err:    fmt.Errorf("Project not found"),
+	}
+	config := &mockConfig{
+		cache: &mockCache{},
+		cfg:   map[string]string{"user": "Dilbert"},
+	}
+	err := projectsCommand(client, config, true, "", &out)
+	if err == nil {
+		t.Error("Expected a non-nil error")
+	}
+	if err.Error() != "Cannot list projects: User Dilbert not found. Check your configuration!" {
+		t.Errorf("Unexpected error message '%s'", err)
+	}
+	if out.String() != "" {
+		t.Errorf("Expected output to be empty but it is '%s'", out.String())
+	}
+}
+
 func TestBrokenResponse(t *testing.T) {
 	var out strings.Builder
 	client := mockClient{
@@ -250,5 +279,32 @@ func TestCache(t *testing.T) {
 	}
 	if config.writeCalls != 1 {
 		t.Errorf("Expected the config to be written once but was %d", config.writeCalls)
+	}
+}
+
+func TestNewCommand(t *testing.T) {
+	cmd := NewCommand(mockClient{}, &mockConfig{})
+	flags := cmd.Flags()
+
+	quietFlag := flags.Lookup("quiet")
+	if quietFlag == nil {
+		t.Errorf("Expected 'quiet' flag to exist")
+	}
+	if quietFlag.Value.Type() != "bool" {
+		t.Errorf("Expected 'quiet' flag to be a bool but is %s", quietFlag.Value.Type())
+	}
+	if quietFlag.DefValue != "false" {
+		t.Errorf("Expected default value of 'quiet' flag to be 'false' but is '%s'", quietFlag.DefValue)
+	}
+
+	formatFlag := flags.Lookup("format")
+	if formatFlag == nil {
+		t.Errorf("Expected 'format' flag to exist")
+	}
+	if formatFlag.Value.Type() != "string" {
+		t.Errorf("Expected 'format' flag to be a string but is %s", formatFlag.Value.Type())
+	}
+	if formatFlag.DefValue != "" {
+		t.Errorf("Expected default value of 'format' flag to be '' but is '%s'", formatFlag.DefValue)
 	}
 }

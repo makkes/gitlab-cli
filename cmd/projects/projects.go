@@ -60,7 +60,7 @@ func projectsCommand(client api.Client, cfg config.Config, quiet bool, format st
 	return nil
 }
 
-func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
+func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	var quiet *bool
 	var format *string
 
@@ -68,11 +68,7 @@ func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 		Use:   "projects",
 		Short: "List all your projects",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := projectsCommand(client, cfg, *quiet, *format, os.Stdout)
-			if err != nil {
-				return err
-			}
-			return nil
+			return projectsCommand(client, cfg, *quiet, *format, os.Stdout)
 		},
 	}
 
