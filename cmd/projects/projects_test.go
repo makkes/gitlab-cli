@@ -2,81 +2,19 @@ package projects
 
 import (
 	"fmt"
-	"io"
 	"strings"
 	"testing"
 
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/mock"
 )
-
-type mockClient struct {
-	res    []byte
-	status int
-	err    error
-}
-
-func (m mockClient) Get(path string) ([]byte, int, error) {
-	return m.res, m.status, m.err
-}
-
-func (m mockClient) Post(path string, body io.Reader) ([]byte, int, error) {
-	return m.res, 0, m.err
-}
-
-func (m mockClient) Delete(path string) (int, error) {
-	return 0, m.err
-}
-
-func (m mockClient) FindProject(nameOrID string) (*api.Project, error) {
-	return nil, nil
-}
-
-type mockCache struct {
-	calls [][]string
-	cache map[string]map[string]string
-}
-
-func (c mockCache) Flush() {}
-
-func (c mockCache) Get(cacheName, key string) string {
-	return ""
-}
-
-func (c *mockCache) Put(cacheName, key, value string) {
-	if c.calls == nil {
-		c.calls = make([][]string, 0)
-	}
-	c.calls = append(c.calls, []string{cacheName, key, value})
-}
-
-type mockConfig struct {
-	cache      config.Cache
-	cfg        map[string]string
-	writeCalls int
-}
-
-func (c mockConfig) Cache() config.Cache {
-	return c.cache
-}
-
-func (c *mockConfig) Write() {
-	c.writeCalls++
-}
-
-func (c mockConfig) Get(key string) string {
-	return c.cfg[key]
-}
-
-func (c mockConfig) Set(key, value string) {}
 
 func TestClientError(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		err: fmt.Errorf("Some client error"),
+	client := mock.MockClient{
+		Err: fmt.Errorf("Some client error"),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err == nil {
@@ -92,13 +30,13 @@ func TestClientError(t *testing.T) {
 
 func TestUnknownProject(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		status: 404,
-		err:    fmt.Errorf("Project not found"),
+	client := mock.MockClient{
+		Status: 404,
+		Err:    fmt.Errorf("Project not found"),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
-		cfg:   map[string]string{"user": "Dilbert"},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
+		Cfg:       map[string]string{"user": "Dilbert"},
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err == nil {
@@ -114,11 +52,11 @@ func TestUnknownProject(t *testing.T) {
 
 func TestBrokenResponse(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte("this is not JSON"),
+	client := mock.MockClient{
+		Res: []byte("this is not JSON"),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err == nil {
@@ -130,11 +68,11 @@ func TestBrokenResponse(t *testing.T) {
 }
 func TestEmptyResult(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[]`),
+	client := mock.MockClient{
+		Res: []byte(`[]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err != nil {
@@ -147,11 +85,11 @@ func TestEmptyResult(t *testing.T) {
 
 func TestQuietOutput(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[{"id": 123}, {"id": 456}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123}, {"id": 456}]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err != nil {
@@ -164,11 +102,11 @@ func TestQuietOutput(t *testing.T) {
 
 func TestFormattedOutput(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, false, "{{.Name}}", &out)
 	if err != nil {
@@ -180,11 +118,11 @@ func TestFormattedOutput(t *testing.T) {
 }
 func TestFormattedOutputError(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, false, "{{.Broken}", &out)
 	if err == nil {
@@ -204,11 +142,11 @@ func (m mockOutput) Write(p []byte) (n int, err error) {
 	return m.n, m.err
 }
 func TestTemplateExecutionError(t *testing.T) {
-	client := mockClient{
-		res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, false, "{{.Name}}", &mockOutput{err: fmt.Errorf("some error")})
 	if err == nil {
@@ -218,11 +156,11 @@ func TestTemplateExecutionError(t *testing.T) {
 
 func TestTableOutput(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123, "name":"broken arrow"}, {"id": 456, "name":"almanac"}]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, false, "", &out)
 	if err != nil {
@@ -238,11 +176,11 @@ func TestTableOutput(t *testing.T) {
 
 func TestEmptyTableOutput(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[]`),
+	client := mock.MockClient{
+		Res: []byte(`[]`),
 	}
-	config := &mockConfig{
-		cache: &mockCache{},
+	config := &mock.MockConfig{
+		CacheData: &mock.MockCache{},
 	}
 	err := projectsCommand(client, config, false, "", &out)
 	if err != nil {
@@ -255,35 +193,35 @@ func TestEmptyTableOutput(t *testing.T) {
 
 func TestCache(t *testing.T) {
 	var out strings.Builder
-	client := mockClient{
-		res: []byte(`[{"id": 123, "name": "p1"}, {"id": 456, "name":"p2"}]`),
+	client := mock.MockClient{
+		Res: []byte(`[{"id": 123, "name": "p1"}, {"id": 456, "name":"p2"}]`),
 	}
-	cache := mockCache{}
-	config := &mockConfig{
-		cache: &cache,
+	cache := mock.MockCache{}
+	config := &mock.MockConfig{
+		CacheData: &cache,
 	}
 	err := projectsCommand(client, config, true, "", &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if len(cache.calls) != 2 {
-		t.Errorf("Expected two values to be cached but got %d", len(cache.calls))
+	if len(cache.Calls) != 2 {
+		t.Errorf("Expected two values to be cached but got %d", len(cache.Calls))
 	}
-	call := cache.calls[0]
+	call := cache.Calls[0]
 	if call[0] != "projects" || call[1] != "p1" || call[2] != "123" {
 		t.Errorf("Unexpected PUT call on cache: %s", call)
 	}
-	call = cache.calls[1]
+	call = cache.Calls[1]
 	if call[0] != "projects" || call[1] != "p2" || call[2] != "456" {
 		t.Errorf("Unexpected PUT call on cache: %s", call)
 	}
-	if config.writeCalls != 1 {
-		t.Errorf("Expected the config to be written once but was %d", config.writeCalls)
+	if config.WriteCalls != 1 {
+		t.Errorf("Expected the config to be written once but was %d", config.WriteCalls)
 	}
 }
 
 func TestNewCommand(t *testing.T) {
-	cmd := NewCommand(mockClient{}, &mockConfig{})
+	cmd := NewCommand(mock.MockClient{}, &mock.MockConfig{})
 	flags := cmd.Flags()
 
 	quietFlag := flags.Lookup("quiet")
