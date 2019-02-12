@@ -30,6 +30,10 @@ func (m MockClient) FindProject(nameOrID string) (*api.Project, error) {
 	return nil, nil
 }
 
+func (m MockClient) FindProjectDetails(nameOrID string) ([]byte, error) {
+	return nil, nil
+}
+
 type MockCache struct {
 	Calls [][]string
 	Cache map[string]map[string]string

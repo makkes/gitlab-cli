@@ -85,6 +85,7 @@ type Client interface {
 	Post(path string, body io.Reader) ([]byte, int, error)
 	Delete(path string) (int, error)
 	FindProject(nameOrID string) (*Project, error)
+	FindProjectDetails(nameOrID string) ([]byte, error)
 }
 
 type APIClient struct {
