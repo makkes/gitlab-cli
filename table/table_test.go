@@ -167,8 +167,70 @@ func TestIssuesTable(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			PrintIssues(tt.writer, tt.issues)
 			if tt.writer.String() != tt.out {
-				t.Errorf("'%s'", strings.Split(tt.writer.String(), "\n")[1])
-				t.Errorf("Unexpected result: (%d) '%s'", len(tt.writer.String()), tt.writer.String())
+				t.Errorf("Unexpected result: '%s'", tt.writer.String())
+			}
+		})
+	}
+}
+
+func TestVarsTable(t *testing.T) {
+	varsTableTests := []struct {
+		name   string
+		writer *strings.Builder
+		vars   []api.Var
+		out    string
+	}{
+		{
+			"empty input",
+			&strings.Builder{},
+			[]api.Var{},
+			"KEY                  VALUE                                    PROTECTED\n",
+		},
+		{
+			"nil input",
+			&strings.Builder{},
+			nil,
+			"KEY                  VALUE                                    PROTECTED\n",
+		},
+		{
+			"happy path",
+			&strings.Builder{},
+			[]api.Var{
+				{
+					Key:       "key 1",
+					Value:     "value 1",
+					Protected: false,
+				},
+				{
+					Key:       "",
+					Value:     "",
+					Protected: true,
+				},
+				{
+					Key:       "",
+					Value:     "some value",
+					Protected: false,
+				},
+				{
+					Key:       "some key",
+					Value:     "",
+					Protected: false,
+				},
+			},
+			`KEY                  VALUE                                    PROTECTED
+key 1                value 1                                  false    
+                                                              true     
+                     some value                               false    
+some key                                                      false    
+`,
+		},
+	}
+
+	for _, tt := range varsTableTests {
+		t.Run(tt.name, func(t *testing.T) {
+			PrintVars(tt.writer, tt.vars)
+			if tt.writer.String() != tt.out {
+				t.Errorf("Unexpected result: '%s'", tt.writer.String())
 			}
 		})
 	}

@@ -106,7 +106,7 @@ func calcVarColumnWidths(vars []api.Var) map[string]int {
 	res := make(map[string]int)
 	res["key"] = 20
 	res["value"] = 40
-	res["protected"] = 7
+	res["protected"] = 9
 
 	for _, v := range vars {
 		w := len(v.Key)
