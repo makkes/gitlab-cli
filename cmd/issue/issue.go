@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "issue COMMAND",
 		Short: "Manage issues",

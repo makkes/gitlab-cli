@@ -33,7 +33,7 @@ func inspectCommand(client api.Client, args []string, out io.Writer) error {
 
 }
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "inspect ID",
 		Short: "Display detailed information on an issue",
