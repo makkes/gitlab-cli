@@ -3,6 +3,8 @@ package cmd
 import (
 	"os"
 
+	"github.com/makkes/gitlab-cli/cmd/completion"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/issue"
 	"github.com/makkes/gitlab-cli/cmd/issues"
@@ -33,6 +35,7 @@ func Execute(cfg config.Config) {
 	rootCmd.AddCommand(issue.NewCommand(apiClient))
 	rootCmd.AddCommand(variable.NewCommand(apiClient))
 	rootCmd.AddCommand(status.NewCommand(apiClient, cfg))
+	rootCmd.AddCommand(completion.NewCommand(rootCmd))
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
