@@ -20,7 +20,7 @@ func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 			}
 			err, username := client.Login(args[0], url)
 			if err != nil {
-				return fmt.Errorf("Cannot login: %s", err)
+				return fmt.Errorf("Cannot login to %s: %s", url, err)
 			}
 			fmt.Printf("Logged in as %s\n", username)
 			cfg.Write()
