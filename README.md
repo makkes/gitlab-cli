@@ -8,7 +8,7 @@ GitLab repos.
 
 ![](./demo.gif "GitLab CLI Demo Video")
 
-## Installation and usage
+## Installation and Usage
 
 ```
 go get github.com/makkes/gitlab-cli
@@ -34,6 +34,18 @@ Currently GitLab CLI supports these commands:
 * `issues`: List all issues of a project
 * `issue`: Manage issues
 * `status`: Display the current configuration of GitLab CLI
+
+## Bash Completion
+
+You can get your Bash to complete GitLab CLI commands very easily: Just type the
+following line in your shell:
+
+```sh
+. <(gitlab-cli completion)
+```
+
+To have completion set up for you automatically just copy and paste the line
+from above into your `~/.bashrc` or `~/.profile`.
 
 ## License
 
