@@ -1,3 +1,4 @@
 /gitlab-cli
 /gitlab-cli_v*
 cover.out
+/build
