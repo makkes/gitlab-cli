@@ -4,3 +4,7 @@ go:
     - master
 env:
     - GO111MODULE=on
+os:
+    - linux
+    - osx
+    - windows
