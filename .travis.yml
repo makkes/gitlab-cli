@@ -10,4 +10,4 @@ os:
     - windows
 matrix:
     allow_failures:
-        - windows
+        - os: windows
