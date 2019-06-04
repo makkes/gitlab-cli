@@ -11,6 +11,7 @@ os:
 matrix:
     allow_failures:
         - os: windows
-script: 
-    - if [ "$TRAVIS_OS_NAME" = "windows" ]; then cmake test ; fi
-    - if [ "$TRAVIS_OS_NAME" != "windows" ]; then make test ; fi
+before_script: 
+    - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install make ; fi
+script:
+    - make test
