@@ -19,7 +19,9 @@ release](https://github.com/makkes/gitlab-cli/releases).
 
 All commands of gitlab-cli currently require that you are authenticated. To do
 so you issue `gitlab-cli login YOUR_TOKEN`. You obtain a personal access token
-at https://gitlab.com/profile/personal_access_tokens.
+at https://gitlab.com/profile/personal_access_tokens. To make use of all of
+gitlab-cli's features you need to grant api, read_user, read_repository and
+read_registry scopes.
 
 ## Commands
 
