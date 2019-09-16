@@ -1,0 +1,15 @@
+name: Test
+on: pull_request
+  types: [created,edited]
+jobs:
+
+  echo:
+    name: Echo
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Echo some env
+      env:
+        MY_VAR: ${{github.event.pull_request}}
+      run: |
+        echo $MY_VAR
