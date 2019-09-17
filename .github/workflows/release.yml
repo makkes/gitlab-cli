@@ -8,7 +8,7 @@ jobs:
         name: Create CLI binaries for ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         steps:
-            - name: Checkout the repository
+          - name: Checkout the repository
               uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
             - name: Generate artifacts
               uses: skx/github-action-build@5ca2e55b7ba4583d27b0e4c256685dd7fffb4acf
@@ -16,5 +16,5 @@ jobs:
               uses: skx/github-action-publish-binaries@cafb819f9432619c3331782ffbbb752f1e2be626
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  with:
-                      args: 'gitlab-cli-*'
+              with:
+                  args: 'gitlab-cli-*'
