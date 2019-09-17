@@ -1,11 +1,17 @@
 name: Test
-on: [check_run]
+on: [pull_request]
 jobs:
-  echo:
-    name: Echo
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+        matrix:
+            go: ['1.x']
+            os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
     steps:
-    - name: Echo some env
-      env:
-        MY_VAR: ${{ github.event.check_run.conclusion }}
-      run: echo $MY_VAR
+    - uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
+    - uses: actions/setup-go@75259a5ae02e59409ee6c4fa1e37ed46ea4e5b8d
+      with:
+          go-version: ${{ matrix.go }}
+    - name: Run unit tests
+      run: make test
