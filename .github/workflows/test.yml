@@ -5,7 +5,7 @@ jobs:
     name: Echo
     runs-on: ubuntu-latest
     steps:
-        - name: Echo some env
-          env:
-            MY_VAR: ${{ github.event.pull_request }}
-          run: echo $MY_VAR
+    - name: Echo some env
+      env:
+        MY_VAR: hello
+      run: echo $MY_VAR
