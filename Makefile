@@ -1,6 +1,6 @@
 DEFAULT_TARGET: build
 
-VERSION := next
+VERSION := 3.1.0
 COMMIT := $(shell git rev-parse --short HEAD)
 LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION) -X github.com/makkes/gitlab-cli/config.Commit=$(COMMIT)
 
