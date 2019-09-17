@@ -1,0 +1,11 @@
+name: Test
+on: [check_run]
+jobs:
+  echo:
+    name: Echo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Echo some env
+      env:
+        MY_VAR: ${{ github.event.check_run.conclusion }}
+      run: echo $MY_VAR
