@@ -7,5 +7,5 @@ jobs:
     steps:
     - name: Echo some env
       env:
-        MY_VAR: hello
+        MY_VAR: ${{ github }}
       run: echo $MY_VAR
