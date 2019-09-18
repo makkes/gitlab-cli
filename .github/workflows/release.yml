@@ -4,7 +4,7 @@ jobs:
     generate:
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+                os: [ubuntu-latest, macos-latest]
         name: Create CLI binaries for ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         steps:
