@@ -14,8 +14,16 @@ jobs:
       with:
           go-version: ${{ matrix.go }}
     - name: Get golangci-lint
-      env:
-          GO111MODULE: off
-      run: go get github.com/golangci/golangci-lint/cmd/golangci-lint
+      run: |
+          export GO111MODULE=off
+          go get github.com/golangci/golangci-lint/cmd/golangci-lint
+    - name: Debug
+      run: |
+          env
+          command -v go
+          echo $GOPATH
+          go env GOPATH
+          go env GOBIN
+          pwd
     - name: Run unit tests
       run: make lint test
