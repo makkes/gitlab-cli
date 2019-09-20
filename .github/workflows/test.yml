@@ -19,11 +19,11 @@ jobs:
           go get github.com/golangci/golangci-lint/cmd/golangci-lint
     - name: Debug
       run: |
+          pwd
           env
           command -v go
           echo $GOPATH
           go env GOPATH
           go env GOBIN
-          pwd
     - name: Run unit tests
       run: make lint test
