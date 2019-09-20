@@ -2,6 +2,7 @@ name: Notify
 on: [issues]
 jobs:
   notify:
+    runs-on: ubuntu-latest
     name: Notify Slack channel about a new issue
     steps:
     - uses: rtCamp/action-slack-notify@23016d7d2813ac9f13b7d2a7734d05080719e467
