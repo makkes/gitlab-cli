@@ -1,5 +1,9 @@
 name: Notify
-on: [issues,pull_request]
+on: 
+  issues:
+      types: [opened, edited, deleted, transferred, pinned, unpinned, closed, reopened, assigned, unassigned, labeled, unlabeled, locked, unlocked, milestoned, demilestoned]
+  pull_request:
+      types: [labeled, unlabeled]
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -8,4 +12,4 @@ jobs:
     - name: Notify using custom action
       uses: makkes/action-notify@master
       with:
-          slack-url: ${{secrets.SLACK_NOTIFICATION_URL}}
+        slack-url: ${{secrets.SLACK_NOTIFICATION_URL}}
