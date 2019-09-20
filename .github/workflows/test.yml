@@ -15,6 +15,7 @@ jobs:
           go-version: ${{ matrix.go }}
     - name: Get golangci-lint
       run: |
+          echo $PATH
           export GO111MODULE=off
           go get github.com/golangci/golangci-lint/cmd/golangci-lint
     - name: Debug
