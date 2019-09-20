@@ -1,10 +1,14 @@
 name: Notify
-on: [issues]
+on: [issues,pull_request]
 jobs:
   notify:
     runs-on: ubuntu-latest
     name: Notify Slack channel about a new issue
     steps:
+    - name: Debug
+      env:
+          MSG: ${{toJson(github)}}
+      run: echo "${MSG}"
     - name: Notify
       env:
           URL: ${{secrets.SLACK_NOTIFICATION_URL}}
