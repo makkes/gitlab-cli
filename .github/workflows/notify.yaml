@@ -17,4 +17,3 @@ jobs:
           ACTION: ${{github.event.action}}
           ISSUE_URL: ${{github.event.issue.html_url}}
           ISSUE_TITLE: ${{github.event.issue.title}}
-      uses: docker://makkes/gh-action-notify:latest
