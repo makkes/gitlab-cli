@@ -11,9 +11,3 @@ jobs:
       run: echo "${MSG}"
     - name: Notify using custom action
       uses: makkes/action-notify@master
-    - name: Notify
-      env:
-          URL: ${{secrets.SLACK_NOTIFICATION_URL}}
-          ACTION: ${{github.event.action}}
-          ISSUE_URL: ${{github.event.issue.html_url}}
-          ISSUE_TITLE: ${{github.event.issue.title}}
