@@ -5,7 +5,8 @@ jobs:
     strategy:
         matrix:
             go: ['1.x']
-            os: [ubuntu-latest, windows-latest, macos-latest]
+            #os: [ubuntu-latest, windows-latest, macos-latest]
+            os: [windows-latest]
     runs-on: ${{ matrix.os }}
     name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
     steps:
@@ -15,6 +16,6 @@ jobs:
           go-version: ${{ matrix.go }}
     - name: Get golangci-lint
       run: |
-          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/local/bin v1.18.0
+          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin v1.18.0
     - name: Run unit tests
       run: make lint test
