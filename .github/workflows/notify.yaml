@@ -5,10 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Notify Slack channel about a new issue
     steps:
-    - name: Debug
-      env:
-          MSG: ${{toJson(github)}}
-      run: echo "${MSG}"
     - name: Notify using custom action
       uses: makkes/action-notify@master
       with:
