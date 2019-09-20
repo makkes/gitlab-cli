@@ -19,7 +19,7 @@ jobs:
           go get github.com/golangci/golangci-lint/cmd/golangci-lint
     - name: Debug
       run: |
-          ls -lh $(go env GOPATH)
+          ls -lh $(go env GOPATH)/bin
           git status
     - name: Run unit tests
       run: make lint test
