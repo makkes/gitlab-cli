@@ -11,3 +11,5 @@ jobs:
       run: echo "${MSG}"
     - name: Notify using custom action
       uses: makkes/action-notify@master
+      with:
+          slack-url: ${{secrets.SLACK_NOTIFICATION_URL}}
