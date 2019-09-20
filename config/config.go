@@ -162,7 +162,7 @@ func (c *inMemoryConfig) Write() {
 		return
 	}
 	var indented bytes.Buffer
-	if err := json.Indent(&indented, unindented, "", "  "); err != nil {
+	if err = json.Indent(&indented, unindented, "", "  "); err != nil {
 		fmt.Printf("Error writing configuration: %s\n", err)
 	}
 	err = ioutil.WriteFile(gitlabCLIConf(), indented.Bytes(), 0600)

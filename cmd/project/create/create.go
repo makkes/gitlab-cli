@@ -32,7 +32,7 @@ Clone via HTTP: %s
 
 }
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	return &cobra.Command{
 		Use:   "create NAME",
 		Short: "Create a new project",

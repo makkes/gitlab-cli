@@ -86,47 +86,49 @@ type Client interface {
 	Delete(path string) (int, error)
 	FindProject(nameOrID string) (*Project, error)
 	FindProjectDetails(nameOrID string) ([]byte, error)
+	Login(token, url string) (string, error)
+	GetPipelineDetails(projectID, pipelineID string) ([]byte, error)
 }
 
-type APIClient struct {
+type HTTPClient struct {
 	basePath string
 	config   config.Config
 	client   http.Client
 }
 
-func NewAPIClient(cfg config.Config) APIClient {
+func NewAPIClient(cfg config.Config) *HTTPClient {
 	client := http.Client{}
-	return APIClient{
+	return &HTTPClient{
 		basePath: "/api/v4",
 		config:   cfg,
 		client:   client,
 	}
 }
 
-func (c APIClient) parse(input string) string {
+func (c HTTPClient) parse(input string) string {
 	return strings.Replace(input, "${user}", c.config.Get(config.User), -1)
 }
 
-func (c *APIClient) Login(token, url string) (error, string) {
+func (c *HTTPClient) Login(token, url string) (string, error) {
 	c.config.Set(config.Token, token)
 	c.config.Set(config.URL, url)
 	res, _, err := c.Get("/user")
 	if err != nil {
-		return err, ""
+		return "", err
 	}
 	var user struct {
 		Username string
 	}
 	err = json.Unmarshal(res, &user)
 	if err != nil {
-		return err, ""
+		return "", err
 	}
 	c.config.Set(config.User, user.Username)
 	c.config.Cache().Flush()
-	return nil, user.Username
+	return user.Username, nil
 }
 
-func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, error) {
+func (c HTTPClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, error) {
 	resp, _, err := c.Get(fmt.Sprintf("/projects/%s/pipelines/%s", url.PathEscape(projectID), url.PathEscape(pipelineID)))
 	if err != nil {
 		return nil, err
@@ -137,7 +139,7 @@ func (c APIClient) GetPipelineDetails(projectID, pipelineID string) ([]byte, err
 // FindProjectDetails searches for a project by its ID or its name,
 // with the ID having precedence over the name and returns the
 // raw JSON object as byte array.
-func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
+func (c HTTPClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	// first try to get the project by its cached ID
 	if cachedID := c.config.Cache().Get("projects", nameOrID); cachedID != "" {
 		resp, _, err := c.Get("/projects/" + url.PathEscape(cachedID))
@@ -176,7 +178,7 @@ func (c APIClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 
 // FindProject searches for a project by its ID or its name,
 // with the ID having precedence over the name.
-func (c APIClient) FindProject(nameOrID string) (*Project, error) {
+func (c HTTPClient) FindProject(nameOrID string) (*Project, error) {
 	projectBytes, err := c.FindProjectDetails(nameOrID)
 	if err != nil {
 		return nil, err
@@ -191,7 +193,7 @@ func (c APIClient) FindProject(nameOrID string) (*Project, error) {
 
 var ErrNotLoggedIn = errors.New("You are not logged in")
 
-func (c APIClient) Get(path string) ([]byte, int, error) {
+func (c HTTPClient) Get(path string) ([]byte, int, error) {
 	if c.config == nil {
 		return nil, 0, ErrNotLoggedIn
 	}
@@ -214,7 +216,7 @@ func (c APIClient) Get(path string) ([]byte, int, error) {
 	return body, 0, nil
 }
 
-func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
+func (c HTTPClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
 	if c.config == nil {
 		return nil, 0, ErrNotLoggedIn
 	}
@@ -237,7 +239,7 @@ func (c APIClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
 	return body, 0, nil
 }
 
-func (c APIClient) Delete(path string) (int, error) {
+func (c HTTPClient) Delete(path string) (int, error) {
 	if c.config == nil {
 		return 0, ErrNotLoggedIn
 	}

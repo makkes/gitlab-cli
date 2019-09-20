@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
+func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",
 		Short: "Display the current configuration of GitLab CLI",

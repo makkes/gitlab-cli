@@ -10,7 +10,7 @@ import (
 
 func TestClientError(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Err: fmt.Errorf("Some client error"),
 	}
 	err := createCommand(client, []string{"new project"}, &out)
@@ -27,7 +27,7 @@ func TestClientError(t *testing.T) {
 
 func TestUnknownResultFromGitLab(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Res: []byte(fmt.Sprintf("This is not JSON")),
 	}
 	err := createCommand(client, []string{"new project"}, &out)
@@ -44,7 +44,7 @@ func TestUnknownResultFromGitLab(t *testing.T) {
 
 func TestHappyPath(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Res: []byte(fmt.Sprintf(`{
 			"name": "new project",
 			"ssh_url_to_repo": "SSH clone URL",

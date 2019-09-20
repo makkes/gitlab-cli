@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	var all *bool
 	var recent *bool
 	var quiet *bool
@@ -49,6 +49,9 @@ func NewCommand(client api.APIClient) *cobra.Command {
 			pds := make([]api.PipelineDetails, 0)
 			for _, p := range filteredPipelines {
 				resp, _, err = client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines/" + strconv.Itoa(p.ID))
+				if err != nil {
+					return fmt.Errorf("Error retrieving pipeline %d: %s", p.ID, err)
+				}
 				var pd api.PipelineDetails
 				err = json.Unmarshal(resp, &pd)
 				if err != nil {

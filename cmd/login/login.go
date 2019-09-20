@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
+func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "login TOKEN [URL]",
 		Short: "Login to GitLab. If URL is omitted then https://gitlab.com is used.",
@@ -18,7 +18,7 @@ func NewCommand(client api.APIClient, cfg config.Config) *cobra.Command {
 			if len(args) == 2 {
 				url = args[1]
 			}
-			err, username := client.Login(args[0], url)
+			username, err := client.Login(args[0], url)
 			if err != nil {
 				return fmt.Errorf("Cannot login to %s: %s", url, err)
 			}

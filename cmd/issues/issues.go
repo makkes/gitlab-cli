@@ -36,7 +36,7 @@ func issuesCommand(args []string, client api.Client, all bool, out io.Writer) er
 	return nil
 }
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	var all *bool
 	cmd := &cobra.Command{
 		Use:   "issues PROJECT",

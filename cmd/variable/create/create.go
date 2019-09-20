@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	return &cobra.Command{
 		Use:   "create PROJECT KEY VALUE",
 		Short: "Create a project-level variable",
@@ -20,7 +20,8 @@ func NewCommand(client api.APIClient) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("Cannot create variable: %s", err)
 			}
-			_, _, err = client.Post("/projects/"+strconv.Itoa(project.ID)+"/variables", strings.NewReader(fmt.Sprintf("key=%s&value=%s", url.QueryEscape(args[1]), url.QueryEscape(args[2]))))
+			_, _, err = client.Post("/projects/"+strconv.Itoa(project.ID)+"/variables",
+				strings.NewReader(fmt.Sprintf("key=%s&value=%s", url.QueryEscape(args[1]), url.QueryEscape(args[2]))))
 			if err != nil {
 				return fmt.Errorf("Cannot create variable: %s", err)
 			}

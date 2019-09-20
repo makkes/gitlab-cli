@@ -18,7 +18,7 @@ func projectsCommand(client api.Client, cfg config.Config, quiet bool, format st
 	resp, status, err := client.Get("/users/${user}/projects")
 	if err != nil {
 		if status == 404 {
-			return fmt.Errorf("Cannot list projects: User %s not found. Check your configuration!", cfg.Get("user"))
+			return fmt.Errorf("cannot list projects: User %s not found. Please check your configuration", cfg.Get("user"))
 		}
 		return fmt.Errorf("Cannot list projects: %s", err)
 	}

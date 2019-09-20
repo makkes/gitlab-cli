@@ -21,7 +21,7 @@ func TestWrongArgFormat(t *testing.T) {
 	for _, tt := range in {
 		t.Run(tt.name, func(t *testing.T) {
 			var out strings.Builder
-			err := inspectCommand(mock.MockClient{}, tt.args, &out)
+			err := inspectCommand(mock.Client{}, tt.args, &out)
 			if out.String() != "" {
 				t.Errorf("Expected output to be empty but it is '%s'", out.String())
 			}
@@ -38,7 +38,7 @@ func TestWrongArgFormat(t *testing.T) {
 
 func TestUnknownProject(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Status: 404,
 		Err:    fmt.Errorf("Project not found"),
 	}
@@ -56,7 +56,7 @@ func TestUnknownProject(t *testing.T) {
 
 func TestUnknownClientError(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Status: 500,
 		Err:    fmt.Errorf("Server broken"),
 	}
@@ -74,7 +74,7 @@ func TestUnknownClientError(t *testing.T) {
 
 func TestHappyPath(t *testing.T) {
 	var out strings.Builder
-	client := mock.MockClient{
+	client := mock.Client{
 		Res: []byte("\"hello\""),
 	}
 	err := inspectCommand(client, []string{"pid:iid"}, &out)

@@ -25,6 +25,9 @@ build: $(BUILD_DIR)/$(BINARY_NAME)
 install:
 	go install -v -ldflags '$(LDFLAGS)'
 
+.PHONY: lint
+lint:
+	golangci-lint run
 .PHONY: test
 test:
 	go test ./...

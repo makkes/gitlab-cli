@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.APIClient) *cobra.Command {
+func NewCommand(client api.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove PROJECT KEY [KEY...]",
 		Short: "Remove project-level variables",
