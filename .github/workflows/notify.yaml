@@ -11,4 +11,4 @@ jobs:
           ACTION: ${{github.event.action}}
           ISSUE_URL: ${{github.event.issue.html_url}}
           ISSUE_TITLE: ${{github.event.issue.title}}
-      run: curl ${URL} -d '{"text":"Issue <'${ISSUE_URL}'|'"${ISSUE_TITLE}"'> has been '${ACTION}'"}'
+      run: curl -s ${URL} -d '{"text":"Issue <'${ISSUE_URL}'|'"${ISSUE_TITLE}"'> has been '${ACTION}'"}'
