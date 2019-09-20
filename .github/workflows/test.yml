@@ -9,13 +9,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
-    - uses: actions/setup-go@75259a5ae02e59409ee6c4fa1e37ed46ea4e5b8d
-      with:
-          go-version: ${{ matrix.go }}
+    #- uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
+    #- uses: actions/setup-go@75259a5ae02e59409ee6c4fa1e37ed46ea4e5b8d
+      #with:
+          #go-version: ${{ matrix.go }}
     - name: Get golangci-lint
       shell: bash
+      env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
       run: |
-          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | (command -v sudo && sudo sh -s -- -b /usr/bin v1.18.0 || sh -s -- -b /usr/bin v1.18.0)
-    - name: Run unit tests
-      run: make lint test
+          echo $RUNNER_CONTEXT
+          #curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | (command -v sudo && sudo sh -s -- -b /usr/bin v1.18.0 || sh -s -- -b /usr/bin v1.18.0)
+    #- name: Run unit tests
+      #run: make lint test
