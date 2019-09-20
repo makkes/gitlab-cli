@@ -15,12 +15,6 @@ jobs:
           go-version: ${{ matrix.go }}
     - name: Get golangci-lint
       run: |
-          echo $PATH
-          export GO111MODULE=off
-          go get github.com/golangci/golangci-lint/cmd/golangci-lint
-    - name: Debug
-      run: |
-          ls -lh $(go env GOPATH)/bin
-          git status
+          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b /usr/local/bin v1.18.0
     - name: Run unit tests
       run: make lint test
