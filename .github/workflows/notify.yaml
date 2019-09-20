@@ -1,0 +1,7 @@
+name: Notify
+on: [issues]
+jobs:
+  notify:
+    name: Notify Slack channel about a new issue
+    steps:
+    - uses: rtCamp/action-slack-notify
