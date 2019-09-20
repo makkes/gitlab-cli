@@ -9,16 +9,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
     steps:
-    #- uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
-    #- uses: actions/setup-go@75259a5ae02e59409ee6c4fa1e37ed46ea4e5b8d
-      #with:
-          #go-version: ${{ matrix.go }}
-    - name: Get golangci-lint
+    - uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
+    - uses: actions/setup-go@75259a5ae02e59409ee6c4fa1e37ed46ea4e5b8d
+      with:
+          go-version: ${{ matrix.go }}
+    - name: Get golangci-lint on Windows
+      if: runner.os == 'Windows'
       shell: bash
-      env:
-          OS: ${{ runner.os }}
-      run: |
-          echo $OS
-          #curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | (command -v sudo && sudo sh -s -- -b /usr/bin v1.18.0 || sh -s -- -b /usr/bin v1.18.0)
-    #- name: Run unit tests
-      #run: make lint test
+      run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/bin v1.18.0
+    - name: Get golangci-lint on macOS and Linux
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      shell: bash
+      run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/local/bin v1.18.0
+    - name: Run unit tests
+      run: make lint test
