@@ -10,7 +10,7 @@ os = $(word 1, $@)
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR=build
 PKG_DIR=/gitlab-cli_$(GOOS)
-BINARY_NAME=gitlab-cli
+BINARY_NAME=gitlab
 SRCS := $(shell find . -type f -name '*.go' -not -path './vendor/*')
 
 .PHONY: $(PLATFORMS)

@@ -22,7 +22,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:          "gitlab-cli",
+	Use:          "gitlab",
 	SilenceUsage: true,
 }
 
