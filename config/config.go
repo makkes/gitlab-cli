@@ -100,7 +100,6 @@ func checkPermissions(f *os.File) {
 func Read() Config {
 	f, err := os.Open(gitlabCLIConf())
 	if err != nil {
-		fmt.Printf("WARNING: Error opening configuration file: %s\n\n", err)
 		return &defaultConfig
 	}
 	defer f.Close()
