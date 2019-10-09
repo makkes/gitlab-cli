@@ -15,7 +15,7 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			url := cfg.Get("url")
 			if url == "" {
-				return fmt.Errorf("GitLab CLI is not configured, yet. Run »gitlab-cli login« first")
+				return fmt.Errorf("GitLab CLI is not configured, yet. Run »gitlab login« first")
 			}
 			fmt.Printf("Logged in at %s as %s\n", url, cfg.Get("user"))
 			return nil

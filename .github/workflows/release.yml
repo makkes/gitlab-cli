@@ -14,4 +14,4 @@ jobs:
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             with:
-                args: 'build/gitlab-cli_*'
+                args: 'build/gitlab_*'
