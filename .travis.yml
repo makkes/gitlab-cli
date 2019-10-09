@@ -1,0 +1,18 @@
+language: go
+go:
+    - 1.x
+    - master
+env:
+    - GO111MODULE=on
+os:
+    - linux
+    - osx
+    - windows
+matrix:
+    allow_failures:
+        - os: windows
+          go: master
+before_script:
+    - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install make ; fi
+script:
+    - make test
