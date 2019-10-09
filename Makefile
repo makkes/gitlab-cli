@@ -1,4 +1,4 @@
-DEFAULT_TARGET: release
+DEFAULT_TARGET: build
 
 VERSION := 3.3.0-dev
 COMMIT := $(shell git rev-parse --short HEAD)
@@ -9,21 +9,22 @@ os = $(word 1, $@)
 
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR=build
-PKG_DIR=/gitlab-cli_$(GOOS)
 BINARY_NAME=gitlab
 SRCS := $(shell find . -type f -name '*.go' -not -path './vendor/*')
+
+.PHONY: build
+build:
+	mkdir -p $(BUILD_DIR)
+	go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
 	mkdir -p $(BUILD_DIR)
 	GOOS=$(os) GOARCH=amd64 go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)_$(VERSION)_$(os)_amd64
 
-.PHONY: build
-build: $(BUILD_DIR)/$(BINARY_NAME)
-
 .PHONY: install
-install:
-	go install -v -ldflags '$(LDFLAGS)'
+install: build
+	mv $(BUILD_DIR)/$(BINARY_NAME) /usr/local/bin/
 
 .PHONY: lint
 lint:
