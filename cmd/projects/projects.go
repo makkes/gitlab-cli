@@ -15,12 +15,8 @@ import (
 )
 
 func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, out io.Writer) error {
-	path := "/users/${user}/projects"
-	if page > 0 {
-		path += fmt.Sprintf("?page=%d", page)
-	}
+	resp, status, err := client.Get(fmt.Sprintf("/users/${user}/projects?page=%d", page))
 
-	resp, status, err := client.Get(path)
 	if err != nil {
 		if status == 404 {
 			return fmt.Errorf("cannot list projects: User %s not found. Please check your configuration", cfg.Get("user"))
