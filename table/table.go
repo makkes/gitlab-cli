@@ -107,6 +107,7 @@ func calcVarColumnWidths(vars []api.Var) map[string]int {
 	res["key"] = 20
 	res["value"] = 40
 	res["protected"] = 9
+	res["environment_scope"] = 11
 
 	for _, v := range vars {
 		w := len(v.Key)
@@ -117,6 +118,11 @@ func calcVarColumnWidths(vars []api.Var) map[string]int {
 		w = len(v.Value)
 		if w > res["value"] {
 			res["value"] = w
+		}
+
+		w = len(v.EnvironmentScope)
+		if w > res["environment_scope"] {
+			res["environment_scope"] = w
 		}
 	}
 	return res
@@ -178,15 +184,16 @@ func PrintIssues(out io.Writer, issues []api.Issue) {
 
 func PrintVars(out io.Writer, vars []api.Var) {
 	widths := calcVarColumnWidths(vars)
-	fmt.Fprintf(out, "%s %s %s\n",
+	fmt.Fprintf(out, "%s %s %s %s\n",
 		pad("KEY", widths["key"]),
 		pad("VALUE", widths["value"]),
-		pad("PROTECTED", widths["protected"]))
+		pad("PROTECTED", widths["protected"]),
+		pad("ENVIRONMENT", widths["environment_scope"]))
 	for _, v := range vars {
-		fmt.Fprintf(out, "%s %s %s\n",
+		fmt.Fprintf(out, "%s %s %s %s\n",
 			pad(v.Key, widths["key"]),
 			pad(v.Value, widths["value"]),
-			pad(fmt.Sprintf("%t", v.Protected), widths["protected"]))
-
+			pad(fmt.Sprintf("%t", v.Protected), widths["protected"]),
+			pad(v.EnvironmentScope, widths["environment_scope"]))
 	}
 }
