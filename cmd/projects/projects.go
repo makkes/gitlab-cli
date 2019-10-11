@@ -14,8 +14,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, out io.Writer) error {
-	resp, status, err := client.Get("/users/${user}/projects")
+func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, out io.Writer) error {
+	resp, status, err := client.Get(fmt.Sprintf("/users/${user}/projects?page=%d", page))
+
 	if err != nil {
 		if status == 404 {
 			return fmt.Errorf("cannot list projects: User %s not found. Please check your configuration", cfg.Get("user"))
@@ -63,17 +64,19 @@ func projectsCommand(client api.Client, cfg config.Config, quiet bool, format st
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	var quiet *bool
 	var format *string
+	var page *int
 
 	cmd := &cobra.Command{
 		Use:   "projects",
 		Short: "List all your projects",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return projectsCommand(client, cfg, *quiet, *format, os.Stdout)
+			return projectsCommand(client, cfg, *quiet, *format, *page, os.Stdout)
 		},
 	}
 
 	quiet = cmd.Flags().BoolP("quiet", "q", false, "Only display numeric IDs")
 	format = cmd.Flags().String("format", "", "Pretty-print projects using a Go template")
+	page = cmd.Flags().Int("page", 1, "Page of results to display")
 
 	return cmd
 }

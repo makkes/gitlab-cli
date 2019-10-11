@@ -16,7 +16,7 @@ func TestClientError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -38,7 +38,7 @@ func TestUnknownProject(t *testing.T) {
 		CacheData: &mock.Cache{},
 		Cfg:       map[string]string{"user": "Dilbert"},
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -58,7 +58,7 @@ func TestBrokenResponse(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -74,7 +74,7 @@ func TestEmptyResult(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -91,7 +91,7 @@ func TestQuietOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -108,7 +108,7 @@ func TestFormattedOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Name}}", &out)
+	err := projectsCommand(client, config, false, "{{.Name}}", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -124,7 +124,7 @@ func TestFormattedOutputError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Broken}", &out)
+	err := projectsCommand(client, config, false, "{{.Broken}", 0, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -148,7 +148,7 @@ func TestTemplateExecutionError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Name}}", &mockOutput{err: fmt.Errorf("some error")})
+	err := projectsCommand(client, config, false, "{{.Name}}", 0, &mockOutput{err: fmt.Errorf("some error")})
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -162,7 +162,7 @@ func TestTableOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "", &out)
+	err := projectsCommand(client, config, false, "", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -182,7 +182,7 @@ func TestEmptyTableOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "", &out)
+	err := projectsCommand(client, config, false, "", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -200,7 +200,7 @@ func TestCache(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &cache,
 	}
-	err := projectsCommand(client, config, true, "", &out)
+	err := projectsCommand(client, config, true, "", 0, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
