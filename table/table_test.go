@@ -184,13 +184,13 @@ func TestVarsTable(t *testing.T) {
 			"empty input",
 			&strings.Builder{},
 			[]api.Var{},
-			"KEY                  VALUE                                    PROTECTED\n",
+			"KEY                  VALUE                                    PROTECTED ENVIRONMENT\n",
 		},
 		{
 			"nil input",
 			&strings.Builder{},
 			nil,
-			"KEY                  VALUE                                    PROTECTED\n",
+			"KEY                  VALUE                                    PROTECTED ENVIRONMENT\n",
 		},
 		{
 			"happy path",
@@ -200,28 +200,32 @@ func TestVarsTable(t *testing.T) {
 					Key:       "key 1",
 					Value:     "value 1",
 					Protected: false,
+					EnvironmentScope: "test",
 				},
 				{
 					Key:       "",
 					Value:     "",
 					Protected: true,
+					EnvironmentScope: "test",
 				},
 				{
 					Key:       "",
 					Value:     "some value",
 					Protected: false,
+					EnvironmentScope: "test",
 				},
 				{
 					Key:       "some key",
 					Value:     "",
 					Protected: false,
+					EnvironmentScope: "test",
 				},
 			},
-			`KEY                  VALUE                                    PROTECTED
-key 1                value 1                                  false    
-                                                              true     
-                     some value                               false    
-some key                                                      false    
+			`KEY                  VALUE                                    PROTECTED ENVIRONMENT
+key 1                value 1                                  false     test       
+                                                              true      test       
+                     some value                               false     test       
+some key                                                      false     test       
 `,
 		},
 	}
@@ -231,6 +235,7 @@ some key                                                      false
 			PrintVars(tt.writer, tt.vars)
 			if tt.writer.String() != tt.out {
 				t.Errorf("Unexpected result: '%s'", tt.writer.String())
+				t.Errorf("Expected result:   '%s'", tt.out)
 			}
 		})
 	}
