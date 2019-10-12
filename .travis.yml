@@ -15,4 +15,4 @@ matrix:
 before_script:
     - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install make ; fi
 script:
-    - make test
+    - make lint test
