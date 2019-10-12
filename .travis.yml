@@ -14,7 +14,7 @@ matrix:
           go: master
 before_script:
     - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install make ; fi
-    - if [ "$TRAVIS_OS_NAME" = "windows" ]; then  curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin v1.18.0; fi
-    - if [ "$TRAVIS_OS_NAME" != "windows" ]; then curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/local/bin v1.18.0; fi
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/local/bin v1.18.0; fi
 script:
-    - make lint test
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then make lint ; fi
+    - make test
