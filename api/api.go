@@ -49,9 +49,9 @@ type PipelineDetails struct {
 }
 
 type Var struct {
-	Key         	 string
-	Value       	 string
-	Protected   	 bool
+	Key              string
+	Value            string
+	Protected        bool
 	EnvironmentScope string `json:"environment_scope"`
 }
 
