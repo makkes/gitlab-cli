@@ -15,16 +15,16 @@ SRCS := $(shell find . -type f -name '*.go' -not -path './vendor/*')
 .PHONY: build
 build:
 	mkdir -p $(BUILD_DIR)
-	go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)
+	go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/gitlab
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
 	mkdir -p $(BUILD_DIR)
-	GOOS=$(os) GOARCH=amd64 go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)_$(VERSION)_$(os)_amd64
+	GOOS=$(os) GOARCH=amd64 go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)_$(VERSION)_$(os)_amd64 ./cmd/gitlab
 
 .PHONY: install
-install: build
-	mv $(BUILD_DIR)/$(BINARY_NAME) /usr/local/bin/
+install:
+	go install ./cmd/gitlab
 
 .PHONY: lint
 lint:
