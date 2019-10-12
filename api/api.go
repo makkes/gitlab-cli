@@ -49,7 +49,7 @@ type PipelineDetails struct {
 }
 
 type Var struct {
-e	Key             e string
+	Key              string
 	Value            string
 	Protected        bool
 	EnvironmentScope string `json:"environment_scope"`
