@@ -1,8 +1,7 @@
 DEFAULT_TARGET: build
 
-VERSION := 3.3.0
-COMMIT := $(shell git rev-parse --short HEAD)
-LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION) -X github.com/makkes/gitlab-cli/config.Commit=$(COMMIT)
+VERSION := $(shell git describe --tags --abbrev=0 --exact-match $(git rev-parse HEAD) 2>/dev/null || git rev-parse --short HEAD)
+LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION)
 
 PLATFORMS := windows linux darwin
 os = $(word 1, $@)

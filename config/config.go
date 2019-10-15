@@ -11,7 +11,6 @@ import (
 
 var configFile = ".gitlab-cli.json"
 var Version = "none"
-var Commit = "none"
 
 // keys for the configuration
 const (
