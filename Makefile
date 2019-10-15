@@ -1,6 +1,6 @@
 DEFAULT_TARGET: build
 
-VERSION := $(shell git describe --tags --abbrev=0 --exact-match $(git rev-parse HEAD) 2>/dev/null || git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags $(git rev-parse HEAD))
 LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION)
 
 PLATFORMS := windows linux darwin
@@ -23,7 +23,7 @@ $(PLATFORMS):
 
 .PHONY: install
 install:
-	go install ./cmd/gitlab
+	go install -ldflags '$(LDFLAGS)' ./cmd/gitlab
 
 .PHONY: lint
 lint:
