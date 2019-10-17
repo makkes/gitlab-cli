@@ -14,8 +14,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, out io.Writer) error {
-	resp, status, err := client.Get(fmt.Sprintf("/users/${user}/projects?page=%d", page))
+func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, membership bool, out io.Writer) error {
+	var path string
+	if membership {
+		path = fmt.Sprintf("/projects?membership=true&page=%d", page)
+	} else {
+		path = fmt.Sprintf("/users/${user}/projects?page=%d", page)
+	}
+	resp, status, err := client.Get(path)
 
 	if err != nil {
 		if status == 404 {
@@ -65,18 +71,20 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	var quiet *bool
 	var format *string
 	var page *int
+	var membership *bool
 
 	cmd := &cobra.Command{
 		Use:   "projects",
 		Short: "List all your projects",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return projectsCommand(client, cfg, *quiet, *format, *page, os.Stdout)
+			return projectsCommand(client, cfg, *quiet, *format, *page, *membership, os.Stdout)
 		},
 	}
 
 	quiet = cmd.Flags().BoolP("quiet", "q", false, "Only display numeric IDs")
 	format = cmd.Flags().String("format", "", "Pretty-print projects using a Go template")
 	page = cmd.Flags().Int("page", 1, "Page of results to display")
+	membership = cmd.Flags().Bool("member", false, "Displays projects you are a member of")
 
 	return cmd
 }
