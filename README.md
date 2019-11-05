@@ -1,4 +1,4 @@
-# GitLab Command Line Interface
+1# GitLab Command Line Interface
 
 ![Build Status](https://github.com/makkes/gitlab-cli/workflows/Test/badge.svg)
 [![Build Status](https://travis-ci.org/makkes/gitlab-cli.svg?branch=master)](https://travis-ci.org/makkes/gitlab-cli)
