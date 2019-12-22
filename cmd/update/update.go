@@ -43,8 +43,12 @@ func NewCommand() *cobra.Command {
 				if resp.StatusCode != http.StatusOK {
 					return fmt.Errorf("Could not download latest release: received HTTP status %d", resp.StatusCode)
 				}
-				dest := os.Args[0] + ".new"
-				stat, err := os.Stat(os.Args[0])
+				exec, err := os.Executable()
+				if err != nil {
+					return fmt.Errorf("Could not get current executable to update: %w", err)
+				}
+				dest := exec + ".new"
+				stat, err := os.Stat(exec)
 				if err != nil {
 					return fmt.Errorf("Could not stat binary for updating: %w", err)
 				}
@@ -57,7 +61,7 @@ func NewCommand() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("Could not download new version: %w", err)
 				}
-				err = os.Rename(dest, os.Args[0])
+				err = os.Rename(dest, exec)
 				if err != nil {
 					return fmt.Errorf("Could not update to new version: %w", err)
 				}
