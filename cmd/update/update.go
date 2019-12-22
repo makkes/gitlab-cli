@@ -40,6 +40,9 @@ func NewCommand() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("Could not download latest release: %w", err)
 				}
+				if resp.StatusCode != http.StatusOK {
+					return fmt.Errorf("Could not download latest release: received HTTP status %d", resp.StatusCode)
+				}
 				dest := os.Args[0] + ".new"
 				stat, err := os.Stat(os.Args[0])
 				if err != nil {
