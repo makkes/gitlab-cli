@@ -14,11 +14,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const repo = "https://github.com/makkes/gitlab-cli"
+
 func NewCommand() *cobra.Command {
+	var dryRun *bool
+
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update GitLab CLI to latest version",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			latestVersionString, err := versions.LatestVersion()
 			if err != nil {
@@ -33,8 +37,12 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("Could not parse current version '%s': %w", config.Version, err)
 			}
 			if currentVersion.Compare(*latestVersion) == -1 {
-				downloadURL := fmt.Sprintf("https://github.com/makkes/gitlab-cli/releases/download/%s/gitlab_%s_%s_%s",
-					latestVersionString, latestVersionString, runtime.GOOS, runtime.GOARCH)
+				if *dryRun {
+					fmt.Printf("A new version is available: %s\nSee %s for details\n", latestVersionString, repo+"/releases/"+latestVersionString)
+					return nil
+				}
+				downloadURL := fmt.Sprintf("%s/releases/download/%s/gitlab_%s_%s_%s",
+					repo, latestVersionString, latestVersionString, runtime.GOOS, runtime.GOARCH)
 				fmt.Printf("Updating to %s\n", latestVersionString)
 				resp, err := http.Get(downloadURL) // #nosec G107
 				if err != nil {
@@ -65,9 +73,15 @@ func NewCommand() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("Could not update to new version: %w", err)
 				}
+			} else if *dryRun {
+				fmt.Printf("No update available, yet.\n")
+				return nil
 			}
 			return nil
 		},
 	}
+
+	dryRun = cmd.Flags().BoolP("dry-run", "d", false, "Only check if an update is available")
+
 	return cmd
 }
