@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/makkes/gitlab-cli/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/makkes/gitlab-cli/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/makkes/gitlab-cli/releases.atom"/>
+  <title>Release notes from gitlab-cli</title>
+  <updated>2019-12-23T08:51:05Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.6.3</id>
+    <updated>2019-12-23T08:58:17Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.6.3"/>
+    <title>3.6.3</title>
+    <content type="html">&lt;h1&gt;Minor enhancements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &#39;--dry-run&#39; flag to the &#39;update&#39; cmd&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.6.2</id>
+    <updated>2019-12-23T08:55:37Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.6.2"/>
+    <title>3.6.2</title>
+    <content type="html">&lt;h1&gt;Minor enhancements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Fix &lt;code&gt;update&lt;/code&gt; command when run from &lt;code&gt;$PATH&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.6.1</id>
+    <updated>2019-12-23T08:56:45Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.6.1"/>
+    <title>3.6.1</title>
+    <content type="html">&lt;h1&gt;Minor enhancements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Make &lt;code&gt;update&lt;/code&gt; command more robust&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.6.0</id>
+    <updated>2019-12-22T21:21:24Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.6.0"/>
+    <title>3.6.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &lt;code&gt;update&lt;/code&gt; command (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;541499883&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/40&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/pull/40/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/pull/40&quot;&gt;#40&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Contributors to this release&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/makkes/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/makkes&quot;&gt;@makkes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.5.0</id>
+    <updated>2019-12-14T12:30:08Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.5.0"/>
+    <title>3.5.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Add optional &lt;code&gt;environment_scope&lt;/code&gt; argument to &lt;code&gt;var create&lt;/code&gt; (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;508614896&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/34&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/pull/34/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/pull/34&quot;&gt;#34&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Minor changes&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;don&#39;t print warning when config file doesn&#39;t exist (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;537906111&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/38&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/pull/38/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/pull/38&quot;&gt;#38&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Contributors to this release&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/erikthered/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/erikthered&quot;&gt;@erikthered&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/makkes/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/makkes&quot;&gt;@makkes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.4.0</id>
+    <updated>2019-10-15T13:37:26Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.4.0"/>
+    <title>3.4.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &lt;code&gt;--page&lt;/code&gt; parameter to &lt;code&gt;projects&lt;/code&gt; and &lt;code&gt;issues&lt;/code&gt; commands (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;504894809&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/29&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/pull/29/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/pull/29&quot;&gt;#29&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Add environment scope column to var command output (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;505913060&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/30&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/pull/30/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/pull/30&quot;&gt;#30&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Contributors to this release&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/erikthered/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/erikthered&quot;&gt;@erikthered&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/makkes/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/makkes&quot;&gt;@makkes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.3.0</id>
+    <updated>2019-10-09T09:19:45Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.3.0"/>
+    <title>3.3.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;p&gt;This release features two new contributors: &lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/erikthered/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/erikthered&quot;&gt;@erikthered&lt;/a&gt; and &lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/bfontaine/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/bfontaine&quot;&gt;@bfontaine&lt;/a&gt; &lt;g-emoji class=&quot;g-emoji&quot; alias=&quot;tada&quot; fallback-src=&quot;https://github.githubassets.com/images/icons/emoji/unicode/1f389.png&quot;&gt;🎉&lt;/g-emoji&gt;&lt;/p&gt;
+&lt;h1&gt;Minor changes&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Improved help output of &lt;code&gt;var create&lt;/code&gt; (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;499447213&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/20&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/issues/20/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/issues/20&quot;&gt;#20&lt;/a&gt;). Thanks to &lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/erikthered/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/erikthered&quot;&gt;@erikthered&lt;/a&gt; for raising that.&lt;/li&gt;
+&lt;li&gt;Renamed the binary from &lt;code&gt;gitlab-cli&lt;/code&gt; to &lt;code&gt;gitlab&lt;/code&gt; (&lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load issue title&quot; data-id=&quot;503918009&quot; data-permission-text=&quot;Issue title is private&quot; data-url=&quot;https://github.com/makkes/gitlab-cli/issues/25&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/makkes/gitlab-cli/issues/25/hovercard&quot; href=&quot;https://github.com/makkes/gitlab-cli/issues/25&quot;&gt;#25&lt;/a&gt;). Thanks to &lt;a class=&quot;user-mention&quot; data-hovercard-type=&quot;user&quot; data-hovercard-url=&quot;/users/bfontaine/hovercard&quot; data-octo-click=&quot;hovercard-link-click&quot; data-octo-dimensions=&quot;link_type:self&quot; href=&quot;https://github.com/bfontaine&quot;&gt;@bfontaine&lt;/a&gt; for the contribution.&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.2.0</id>
+    <updated>2019-09-20T07:45:05Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.2.0"/>
+    <title>3.2.0</title>
+    <content type="html">&lt;p&gt;This release doesn&#39;t ship any changes to the CLI itself but rather is the first release that ships binaries for Linux, Windows and macOS.&lt;/p&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.1.0</id>
+    <updated>2019-09-17T18:56:15Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.1.0"/>
+    <title>3.1.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;h2&gt;New commands&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Added &lt;code&gt;version&lt;/code&gt; command to display the version of GitLab CLI&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.0.0</id>
+    <updated>2019-02-21T21:47:59Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.0.0"/>
+    <title>3.0.0</title>
+    <content type="html">&lt;h1&gt;Major improvements&lt;/h1&gt;
+&lt;h2&gt;New commands&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Added &lt;code&gt;var&lt;/code&gt; command to create/list/remove project variables&lt;/li&gt;
+&lt;li&gt;Added &lt;code&gt;status&lt;/code&gt; command to see login status&lt;/li&gt;
+&lt;li&gt;Added &lt;code&gt;completion&lt;/code&gt; cmd to generate Bash completion script&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Changed commands&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;projects&lt;/code&gt; table now contains the project&#39;s clone URL&lt;/li&gt;
+&lt;li&gt;Reworked the &lt;code&gt;project&lt;/code&gt; cmd; it only has sub-cmds now&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;project create&lt;/code&gt; cmd has more useful output now&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Minor changes&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Better UX: Include URL in error message when login fails&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+</feed>

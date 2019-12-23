@@ -7,9 +7,9 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-func LatestVersion() (string, error) {
+func LatestVersion(repo string) (string, error) {
 	fp := gofeed.NewParser()
-	feed, err := fp.ParseURL("https://github.com/makkes/gitlab-cli/releases.atom")
+	feed, err := fp.ParseURL(repo + "/releases.atom")
 	if err != nil {
 		return "", err
 	}
