@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUpdateHappyPath(t *testing.T) {
+func TestUpdate(t *testing.T) {
 	tests := map[string]struct {
 		currentVersion string
 		updatedBinary  []byte
