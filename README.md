@@ -24,6 +24,11 @@ at https://gitlab.com/profile/personal_access_tokens. To make use of all of
 gitlab-cli's features you need to grant api, read_user, read_repository and
 read_registry scopes.
 
+## Updating the CLI
+
+Since version 3.6 the CLI has an `update` command that you can use to update the
+CLI's version so you don't have to download the latest release every time.
+
 ## Commands
 
 Currently GitLab CLI supports these commands:
