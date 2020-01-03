@@ -11,11 +11,27 @@ GitLab repos.
 
 ## Installation and Usage
 
+The easiest installation method is to use the installation script:
+
+```
+# install latest version into /usr/local/bin/
+curl -sSfL https://raw.githubusercontent.com/makkes/gitlab-cli/master/install.sh | sh -s 
+
+# install latest version into ~/bin/
+curl -sSfL https://raw.githubusercontent.com/makkes/gitlab-cli/master/install.sh | sh -s -- -b ~/bin
+
+# install v3.6.3 into /usr/local/bin
+curl -sSfL https://raw.githubusercontent.com/makkes/gitlab-cli/master/install.sh | sh -s v3.6.3
+```
+
+If that script doesn't work for you and you have a Go environment set up you can
+use this command:
+
 ```
 go get github.com/makkes/gitlab-cli
 ```
 
-or grab the binary of the [most current
+As a last resort just manually grab the binary of the [most current
 release](https://github.com/makkes/gitlab-cli/releases).
 
 All commands of gitlab-cli currently require that you are authenticated. To do
