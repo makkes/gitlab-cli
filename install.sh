@@ -71,7 +71,10 @@ do_install() {
     download_url="https://github.com/makkes/gitlab-cli/releases/download/${release_tag}/gitlab_${release_tag}_${os}_${arch}"
     tmpdir=$(mktemp -d)
     echo "Downloading gitlab ${release_tag}..."
-    curl --progress-bar -Lo "${tmpdir}"/gitlab "${download_url}"
+    set +e
+    curl --progress-bar -fLo "${tmpdir}"/gitlab "${download_url}"
+    [ "$?" != "0" ] && echoerr "Error downloading from ${download_url}" && exit 1
+    set -e
     install -t "${target_dir}" "${tmpdir}/gitlab"
 
     echo "Installed gitlab ${release_tag} into ${target_dir}"
