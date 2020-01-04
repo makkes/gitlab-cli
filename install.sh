@@ -78,4 +78,4 @@ do_install() {
 }
 
 check_prereqs
-do_install
+do_install $@
