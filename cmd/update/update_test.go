@@ -34,13 +34,13 @@ func TestUpdate(t *testing.T) {
 		"no update happy path": {
 			currentVersion: "3.6.3",
 			updatedBinary:  []byte{},
-			out:            regexp.MustCompile(`^No update available, yet.\n`),
+			out:            regexp.MustCompile(`^You're already on the latest version `),
 		},
 		"dry-run no update happy path": {
 			currentVersion: "3.6.3",
 			updatedBinary:  []byte{},
 			dryRun:         true,
-			out:            regexp.MustCompile(`^No update available, yet.\n`),
+			out:            regexp.MustCompile(`^You're already on the latest version `),
 		},
 		"dry-run update happy path": {
 			currentVersion: "3.6.2-55-ghf448b",
