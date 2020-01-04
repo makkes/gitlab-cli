@@ -30,19 +30,6 @@ check_prereqs() {
 }
 
 do_install() {
-    target_dir="/usr/local/bin"
-    while getopts "b:" arg; do
-        case "$arg" in
-          b)
-              target_dir="$OPTARG"
-              ;;
-          *)
-              exit 1
-              ;;
-        esac
-    done
-    shift $((OPTIND - 1))
-
     version=${1:-}
     [ -z "$version" ] && version="latest"
 
@@ -76,6 +63,19 @@ do_install() {
 
     echo "Installed gitlab ${release_tag} into ${target_dir}"
 }
+
+target_dir="/usr/local/bin"
+while getopts "b:" arg; do
+    case "$arg" in
+      b)
+          target_dir="$OPTARG"
+          ;;
+      *)
+          exit 1
+          ;;
+    esac
+done
+shift $((OPTIND - 1))
 
 check_prereqs
 do_install
