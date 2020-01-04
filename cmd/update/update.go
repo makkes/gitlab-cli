@@ -67,7 +67,7 @@ func updateCommand(dryRun bool, out io.Writer, getExecutable func() (string, err
 			return fmt.Errorf("Could not update to new version: %w", err)
 		}
 	} else {
-		fmt.Fprintf(out, "No update available, yet.\n")
+		fmt.Fprintf(out, "You're already on the latest version %s.\n", config.Version)
 		return nil
 	}
 	return nil
