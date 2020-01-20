@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -e
-
 is_command() {
     command -v "$1" > /dev/null
 }
@@ -30,6 +28,8 @@ check_prereqs() {
 }
 
 do_install() {
+    set -e
+    check_prereqs
     target_dir="/usr/local/bin"
     while getopts "b:" arg; do
         case "$arg" in
@@ -80,5 +80,4 @@ do_install() {
     echo "Installed gitlab ${release_tag} into ${target_dir}"
 }
 
-check_prereqs
-do_install $@
+(do_install $@)
