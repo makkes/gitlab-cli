@@ -7,7 +7,7 @@ The GitLab Command Line Interface (CLI) is a cross-platform command line utility
 that provides a user-friendly yet powerful way to query information from your
 GitLab repos.
 
-![](./demo.gif "GitLab CLI Demo Video")
+[![asciicast](https://asciinema.org/a/FQRidr5zFZjKcbW1VmcoMvoaM.svg)](https://asciinema.org/a/FQRidr5zFZjKcbW1VmcoMvoaM?autoplay=1)
 
 ## Installation and Usage
 
