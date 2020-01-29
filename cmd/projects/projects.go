@@ -14,9 +14,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, membership bool, out io.Writer) error {
+func projectsCommand(client api.Client, cfg config.Config, quiet bool, format string, page int, membership bool, group string, out io.Writer) error {
 	var path string
-	if membership {
+	if group != "" {
+		path = fmt.Sprintf("/groups/%s/projects?page=%d", group, page)
+	} else if membership {
 		path = fmt.Sprintf("/projects?membership=true&page=%d", page)
 	} else {
 		path = fmt.Sprintf("/users/${user}/projects?page=%d", page)
@@ -25,6 +27,9 @@ func projectsCommand(client api.Client, cfg config.Config, quiet bool, format st
 
 	if err != nil {
 		if status == 404 {
+			if group != "" {
+				return fmt.Errorf("cannot list projects: Group %s not found", group)
+			}
 			return fmt.Errorf("cannot list projects: User %s not found. Please check your configuration", cfg.Get("user"))
 		}
 		return fmt.Errorf("Cannot list projects: %s", err)
@@ -74,10 +79,15 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	var membership *bool
 
 	cmd := &cobra.Command{
-		Use:   "projects",
-		Short: "List all your projects",
+		Use:   "projects [GROUP]",
+		Short: "List all your projects or projects within a specific group",
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return projectsCommand(client, cfg, *quiet, *format, *page, *membership, os.Stdout)
+			group := ""
+			if len(args) > 0 {
+				group = args[0]
+			}
+			return projectsCommand(client, cfg, *quiet, *format, *page, *membership, group, os.Stdout)
 		},
 	}
 
