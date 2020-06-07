@@ -3,8 +3,8 @@ package login
 import (
 	"fmt"
 
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/config"
 	"github.com/spf13/cobra"
 )
 

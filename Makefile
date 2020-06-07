@@ -1,7 +1,7 @@
 DEFAULT_TARGET: build
 
 VERSION := $(shell git describe --tags $(git rev-parse HEAD))
-LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION)
+LDFLAGS := -X github.com/makkes/gitlab-cli/v3/config.Version=$(VERSION)
 
 PLATFORMS := windows linux darwin
 os = $(word 1, $@)

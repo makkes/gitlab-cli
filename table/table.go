@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/v3/api"
 )
 
 func pad(s string, width int) string {

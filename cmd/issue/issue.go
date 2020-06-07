@@ -1,8 +1,8 @@
 package issue
 
 import (
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/issue/inspect"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/cmd/issue/inspect"
 	"github.com/spf13/cobra"
 )
 

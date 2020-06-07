@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/config"
 
 	"github.com/stretchr/testify/assert"
 )

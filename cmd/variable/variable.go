@@ -1,10 +1,10 @@
 package variable
 
 import (
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/variable/create"
-	"github.com/makkes/gitlab-cli/cmd/variable/list"
-	"github.com/makkes/gitlab-cli/cmd/variable/remove"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/cmd/variable/create"
+	"github.com/makkes/gitlab-cli/v3/cmd/variable/list"
+	"github.com/makkes/gitlab-cli/v3/cmd/variable/remove"
 	"github.com/spf13/cobra"
 )
 

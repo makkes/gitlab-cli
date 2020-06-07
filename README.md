@@ -26,7 +26,7 @@ If that script doesn't work for you and you have a Go environment set up you can
 use this command:
 
 ```
-go get github.com/makkes/gitlab-cli
+go get github.com/makkes/gitlab-cli/v3
 ```
 
 As a last resort just manually grab the binary of the [most current

@@ -3,9 +3,9 @@ package mock
 import (
 	"io"
 
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/config"
 
-	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/v3/api"
 )
 
 type Client struct {

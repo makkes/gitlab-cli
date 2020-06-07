@@ -1,4 +1,4 @@
-module github.com/makkes/gitlab-cli
+module github.com/makkes/gitlab-cli/v3
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0 // indirect

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/config"
 	"github.com/spf13/cobra"
 )
 

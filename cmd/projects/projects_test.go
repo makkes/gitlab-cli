@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/makkes/gitlab-cli/mock"
+	"github.com/makkes/gitlab-cli/v3/mock"
 )
 
 func TestClientError(t *testing.T) {
