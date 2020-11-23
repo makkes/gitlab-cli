@@ -194,8 +194,12 @@ func (c HTTPClient) FindProject(nameOrID string) (*Project, error) {
 
 var ErrNotLoggedIn = errors.New("You are not logged in")
 
+func (c HTTPClient) isLoggedIn() bool {
+	return c.config != nil && c.config.Get(config.URL) != "" && c.config.Get(config.Token) != ""
+}
+
 func (c HTTPClient) Get(path string) ([]byte, int, error) {
-	if c.config == nil {
+	if !c.isLoggedIn() {
 		return nil, 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("GET", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
@@ -218,7 +222,7 @@ func (c HTTPClient) Get(path string) ([]byte, int, error) {
 }
 
 func (c HTTPClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
-	if c.config == nil {
+	if !c.isLoggedIn() {
 		return nil, 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("POST", c.config.Get(config.URL)+c.basePath+c.parse(path), reqBody)
@@ -241,7 +245,7 @@ func (c HTTPClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
 }
 
 func (c HTTPClient) Delete(path string) (int, error) {
-	if c.config == nil {
+	if !c.isLoggedIn() {
 		return 0, ErrNotLoggedIn
 	}
 	req, err := http.NewRequest("DELETE", c.config.Get(config.URL)+c.basePath+c.parse(path), nil)
