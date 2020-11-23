@@ -8,7 +8,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: Checkout the repository
-            uses: actions/checkout@94d077c24971944d312dd9197c1bdfba62b39878
+            uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
           - name: Generate artifacts
             uses: skx/github-action-build@5ca2e55b7ba4583d27b0e4c256685dd7fffb4acf
           - name: Upload artifacts
