@@ -7,14 +7,16 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/makkes/gitlab-cli/cmd/get/output"
+
 	"github.com/makkes/gitlab-cli/table"
 
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
 )
 
-func issuesCommand(args []string, client api.Client, all bool, page int, out io.Writer) error {
-	project, err := client.FindProject(args[0])
+func issuesCommand(scope string, format string, client api.Client, all bool, page int, out io.Writer) error {
+	project, err := client.FindProject(scope)
 	if err != nil {
 		return err
 	}
@@ -32,20 +34,33 @@ func issuesCommand(args []string, client api.Client, all bool, page int, out io.
 	if err != nil {
 		return err
 	}
+	issuesIf := make([]interface{}, len(issues))
+	for idx, i := range issues {
+		issuesIf[idx] = i
+	}
 
-	table.PrintIssues(out, issues)
-	return nil
+	return output.Print(resp, format, out, func() error {
+		table.PrintIssues(out, issues)
+		return nil
+	}, func() error {
+		for _, issue := range issues {
+			fmt.Fprintf(out, "%s\n", issue.Title)
+		}
+		return nil
+	}, issuesIf)
 }
 
-func NewCommand(client api.Client) *cobra.Command {
+func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
 	var all *bool
 	var page *int
 	cmd := &cobra.Command{
-		Use:   "issues PROJECT",
+		Use:   "issues",
 		Short: "List issues in a project",
-		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return issuesCommand(args, client, *all, *page, os.Stdout)
+			if project == nil || *project == "" {
+				return fmt.Errorf("please provide a project scope")
+			}
+			return issuesCommand(*project, *format, client, *all, *page, os.Stdout)
 		},
 	}
 

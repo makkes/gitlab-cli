@@ -1,4 +1,4 @@
-package inspect
+package project
 
 import (
 	"bytes"
@@ -25,8 +25,8 @@ func inspectCommand(client api.Client, args []string, out io.Writer) error {
 
 func NewCommand(client api.Client) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "inspect ID",
-		Short: "Display detailed information on an issue",
+		Use:   "project ID",
+		Short: "Display detailed information on a project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return inspectCommand(client, args, os.Stdout)

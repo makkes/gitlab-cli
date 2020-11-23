@@ -71,10 +71,10 @@ func (pd PipelineDetails) Duration(now time.Time) string {
 
 type Pipelines []Pipeline
 
-func (p Pipelines) Filter(cb func(Pipeline) bool) Pipelines {
+func (p Pipelines) Filter(cb func(int, Pipeline) bool) Pipelines {
 	res := make(Pipelines, 0)
-	for _, pipeline := range p {
-		if cb(pipeline) {
+	for idx, pipeline := range p {
+		if cb(idx, pipeline) {
 			res = append(res, pipeline)
 		}
 	}

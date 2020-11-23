@@ -1,4 +1,4 @@
-package issue
+package inspect
 
 import (
 	"testing"
@@ -9,10 +9,10 @@ import (
 func TestSubCommands(t *testing.T) {
 	cmd := NewCommand(mock.Client{})
 	subCmds := cmd.Commands()
-	if len(subCmds) != 1 {
+	if len(subCmds) != 3 {
 		t.Errorf("Expected 1 sub-command but got %d", len(subCmds))
 	}
-	if cmd.UseLine() != "issue COMMAND" {
+	if cmd.UseLine() != "inspect" {
 		t.Errorf("Unexpected usage line '%s'", cmd.UseLine())
 	}
 }
