@@ -7,8 +7,9 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/blang/semver/v4"
+
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/makkes/gitlab-cli/semver"
 
 	"github.com/makkes/gitlab-cli/versions"
 	"github.com/spf13/cobra"
@@ -16,20 +17,20 @@ import (
 
 var repo = "https://github.com/makkes/gitlab-cli"
 
-func updateCommand(dryRun bool, out io.Writer, getExecutable func() (string, error)) error {
-	latestVersionString, err := versions.LatestVersion(repo)
+func updateCommand(dryRun bool, includePreReleases bool, out io.Writer, getExecutable func() (string, error)) error {
+	latestVersionString, err := versions.LatestVersion(repo, includePreReleases)
 	if err != nil {
 		return fmt.Errorf("Could not fetch latest version: %w", err)
 	}
-	latestVersion, err := semver.NewVersion(latestVersionString)
+	latestVersion, err := semver.ParseTolerant(latestVersionString)
 	if err != nil {
 		return fmt.Errorf("Could not parse latest version '%s': %w", latestVersionString, err)
 	}
-	currentVersion, err := semver.NewVersion(config.Version)
+	currentVersion, err := semver.ParseTolerant(config.Version)
 	if err != nil {
 		return fmt.Errorf("Could not parse current version '%s': %w", config.Version, err)
 	}
-	if currentVersion.Compare(*latestVersion) == -1 {
+	if currentVersion.Compare(latestVersion) == -1 {
 		if dryRun {
 			fmt.Fprintf(out, "A new version is available: %s\nSee %s for details\n", latestVersionString, repo+"/releases/"+latestVersionString)
 			return nil
@@ -81,7 +82,7 @@ func NewCommand() *cobra.Command {
 		Short: "Update GitLab CLI to latest version",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return updateCommand(*dryRun, os.Stdout, os.Executable)
+			return updateCommand(*dryRun, false, os.Stdout, os.Executable)
 		},
 	}
 
