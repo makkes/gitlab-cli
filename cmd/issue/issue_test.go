@@ -3,7 +3,7 @@ package issue
 import (
 	"testing"
 
-	"github.com/makkes/gitlab-cli/mock"
+	"github.com/makkes/gitlab-cli/v3/mock"
 )
 
 func TestSubCommands(t *testing.T) {

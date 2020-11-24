@@ -7,14 +7,14 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/makkes/gitlab-cli/config"
-	"github.com/makkes/gitlab-cli/semver"
+	"github.com/makkes/gitlab-cli/v3/config"
+	"github.com/makkes/gitlab-cli/v3/semver"
 
-	"github.com/makkes/gitlab-cli/versions"
+	"github.com/makkes/gitlab-cli/v3/versions"
 	"github.com/spf13/cobra"
 )
 
-var repo = "https://github.com/makkes/gitlab-cli"
+var repo = "https://github.com/makkes/gitlab-cli/v3"
 
 func updateCommand(dryRun bool, out io.Writer, getExecutable func() (string, error)) error {
 	latestVersionString, err := versions.LatestVersion(repo)

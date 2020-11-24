@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/config"
 )
 
 type Project struct {

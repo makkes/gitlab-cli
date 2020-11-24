@@ -1,9 +1,9 @@
 package project
 
 import (
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/project/create"
-	"github.com/makkes/gitlab-cli/cmd/project/inspect"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/cmd/project/create"
+	"github.com/makkes/gitlab-cli/v3/cmd/project/inspect"
 	"github.com/spf13/cobra"
 )
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/table"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/table"
 	"github.com/spf13/cobra"
 )
 

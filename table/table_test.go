@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/v3/api"
 )
 
 func checkColumn(t *testing.T, cols map[string]int, col string, width int) {

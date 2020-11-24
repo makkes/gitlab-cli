@@ -3,23 +3,23 @@ package cmd
 import (
 	"os"
 
-	"github.com/makkes/gitlab-cli/cmd/update"
+	"github.com/makkes/gitlab-cli/v3/cmd/update"
 
-	"github.com/makkes/gitlab-cli/cmd/version"
+	"github.com/makkes/gitlab-cli/v3/cmd/version"
 
-	"github.com/makkes/gitlab-cli/cmd/completion"
+	"github.com/makkes/gitlab-cli/v3/cmd/completion"
 
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/issue"
-	"github.com/makkes/gitlab-cli/cmd/issues"
-	"github.com/makkes/gitlab-cli/cmd/login"
-	"github.com/makkes/gitlab-cli/cmd/pipeline"
-	"github.com/makkes/gitlab-cli/cmd/pipelines"
-	"github.com/makkes/gitlab-cli/cmd/project"
-	"github.com/makkes/gitlab-cli/cmd/projects"
-	"github.com/makkes/gitlab-cli/cmd/status"
-	"github.com/makkes/gitlab-cli/cmd/variable"
-	"github.com/makkes/gitlab-cli/config"
+	"github.com/makkes/gitlab-cli/v3/api"
+	"github.com/makkes/gitlab-cli/v3/cmd/issue"
+	"github.com/makkes/gitlab-cli/v3/cmd/issues"
+	"github.com/makkes/gitlab-cli/v3/cmd/login"
+	"github.com/makkes/gitlab-cli/v3/cmd/pipeline"
+	"github.com/makkes/gitlab-cli/v3/cmd/pipelines"
+	"github.com/makkes/gitlab-cli/v3/cmd/project"
+	"github.com/makkes/gitlab-cli/v3/cmd/projects"
+	"github.com/makkes/gitlab-cli/v3/cmd/status"
+	"github.com/makkes/gitlab-cli/v3/cmd/variable"
+	"github.com/makkes/gitlab-cli/v3/config"
 	"github.com/spf13/cobra"
 )
 
