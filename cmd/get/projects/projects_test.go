@@ -16,7 +16,7 @@ func TestClientError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -38,7 +38,7 @@ func TestUnknownProject(t *testing.T) {
 		CacheData: &mock.Cache{},
 		Cfg:       map[string]string{"user": "Dilbert"},
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -58,7 +58,7 @@ func TestBrokenResponse(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -74,24 +74,24 @@ func TestEmptyResult(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != "" {
+	if out.String() != "ID              NAME                                     URL                                                CLONE                                             \n" {
 		t.Errorf("Expected empty output but got '%s'", out.String())
 	}
 }
 
-func TestQuietOutput(t *testing.T) {
+func TestNameOutput(t *testing.T) {
 	var out strings.Builder
 	client := mock.Client{
-		Res: []byte(`[{"id": 123}, {"id": 456}]`),
+		Res: []byte(`[{"name": "123"}, {"name": "456"}]`),
 	}
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "name", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -108,7 +108,7 @@ func TestFormattedOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Name}}", 0, false, &out)
+	err := projectsCommand(client, config, "go-template={{.Name}}", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -124,7 +124,7 @@ func TestFormattedOutputError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Broken}", 0, false, &out)
+	err := projectsCommand(client, config, "go-template={{.Broken}", 0, false, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -148,7 +148,7 @@ func TestTemplateExecutionError(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "{{.Name}}", 0, false, &mockOutput{err: fmt.Errorf("some error")})
+	err := projectsCommand(client, config, "go-template={{.Name}}", 0, false, &mockOutput{err: fmt.Errorf("some error")})
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
@@ -162,7 +162,7 @@ func TestTableOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -182,7 +182,7 @@ func TestEmptyTableOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, false, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -200,7 +200,7 @@ func TestCache(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &cache,
 	}
-	err := projectsCommand(client, config, true, "", 0, false, &out)
+	err := projectsCommand(client, config, "table", 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
@@ -221,28 +221,29 @@ func TestCache(t *testing.T) {
 }
 
 func TestNewCommand(t *testing.T) {
-	cmd := NewCommand(mock.Client{}, &mock.Config{})
+	format := "table"
+	cmd := NewCommand(mock.Client{}, &mock.Config{}, &format)
 	flags := cmd.Flags()
 
-	quietFlag := flags.Lookup("quiet")
-	if quietFlag == nil {
-		t.Errorf("Expected 'quiet' flag to exist")
+	memberFlag := flags.Lookup("member")
+	if memberFlag == nil {
+		t.Errorf("Expected 'member' flag to exist")
 	}
-	if quietFlag.Value.Type() != "bool" {
-		t.Errorf("Expected 'quiet' flag to be a bool but is %s", quietFlag.Value.Type())
+	if memberFlag.Value.Type() != "bool" {
+		t.Errorf("Expected 'member' flag to be a bool but is %s", memberFlag.Value.Type())
 	}
-	if quietFlag.DefValue != "false" {
-		t.Errorf("Expected default value of 'quiet' flag to be 'false' but is '%s'", quietFlag.DefValue)
+	if memberFlag.DefValue != "false" {
+		t.Errorf("Expected default value of 'member' flag to be 'false' but is '%s'", memberFlag.DefValue)
 	}
 
-	formatFlag := flags.Lookup("format")
-	if formatFlag == nil {
-		t.Errorf("Expected 'format' flag to exist")
+	pageFlag := flags.Lookup("page")
+	if pageFlag == nil {
+		t.Errorf("Expected 'page' flag to exist")
 	}
-	if formatFlag.Value.Type() != "string" {
-		t.Errorf("Expected 'format' flag to be a string but is %s", formatFlag.Value.Type())
+	if pageFlag.Value.Type() != "int" {
+		t.Errorf("Expected 'page' flag to be a bool but is %s", pageFlag.Value.Type())
 	}
-	if formatFlag.DefValue != "" {
-		t.Errorf("Expected default value of 'format' flag to be '' but is '%s'", formatFlag.DefValue)
+	if pageFlag.DefValue != "1" {
+		t.Errorf("Expected default value of 'page' flag to be '1' but is '%s'", pageFlag.DefValue)
 	}
 }

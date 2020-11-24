@@ -3,23 +3,26 @@ package pipelines
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/cmd/get/output"
 	"github.com/makkes/gitlab-cli/table"
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.Client) *cobra.Command {
+func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
 	var all *bool
 	var recent *bool
-	var quiet *bool
 	cmd := &cobra.Command{
-		Use:   "pipelines PROJECT",
-		Short: "List pipelines of a project",
-		Args:  cobra.ExactArgs(1),
+		Use:   "pipelines",
+		Short: "List pipelines in a project",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			project, err := client.FindProject(args[0])
+			if project == nil || *project == "" {
+				return fmt.Errorf("please provide a project scope")
+			}
+			project, err := client.FindProject(*project)
 			if err != nil {
 				return fmt.Errorf("Cannot list pipelines: %s", err)
 			}
@@ -27,6 +30,13 @@ func NewCommand(client api.Client) *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			var respSlice []map[string]interface{}
+			err = json.Unmarshal(resp, &respSlice)
+			if err != nil {
+				return err
+			}
+
 			var pipelines api.Pipelines
 			err = json.Unmarshal(resp, &pipelines)
 			if err != nil {
@@ -37,13 +47,19 @@ func NewCommand(client api.Client) *cobra.Command {
 			}
 			if *recent {
 				pipelines = []api.Pipeline{pipelines[0]}
+				respSlice = respSlice[0:1]
 			}
 			if len(pipelines) <= 0 {
 				return fmt.Errorf("No pipelines found for project '%s'", args[0])
 			}
 
-			filteredPipelines := pipelines.Filter(func(p api.Pipeline) bool {
-				return *all || p.Status == "running" || p.Status == "pending"
+			filteredRespSlice := make([]map[string]interface{}, 0)
+			filteredPipelines := pipelines.Filter(func(idx int, p api.Pipeline) bool {
+				include := *all || p.Status == "running" || p.Status == "pending"
+				if include {
+					filteredRespSlice = append(filteredRespSlice, respSlice[idx])
+				}
+				return include
 			})
 
 			pds := make([]api.PipelineDetails, 0)
@@ -62,20 +78,30 @@ func NewCommand(client api.Client) *cobra.Command {
 				}
 			}
 
-			if *quiet {
+			resp, err = json.Marshal(filteredRespSlice)
+			if err != nil {
+				return err
+			}
+
+			pdIfs := make([]interface{}, len(pds))
+			for idx, pd := range pds {
+				pdIfs[idx] = pd
+			}
+
+			return output.Print(resp, *format, os.Stdout, func() error {
+				table.PrintPipelines(pds)
+				return nil
+			}, func() error {
 				for _, p := range pds {
 					fmt.Printf("%d:%d\n", p.ProjectID, p.ID)
 				}
 				return nil
-			}
-			table.PrintPipelines(pds)
-			return nil
+			}, pdIfs)
 		},
 	}
 
 	all = cmd.Flags().BoolP("all", "a", false, "Show all pipelines (default shows just running/pending.)")
 	recent = cmd.Flags().BoolP("recent", "r", false, "Show only the most recent pipeline")
-	quiet = cmd.Flags().BoolP("quiet", "q", false, "Only display numeric IDs")
 
 	return cmd
 }
