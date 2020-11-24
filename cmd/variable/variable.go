@@ -2,7 +2,6 @@ package variable
 
 import (
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/variable/create"
 	"github.com/makkes/gitlab-cli/cmd/variable/remove"
 	"github.com/spf13/cobra"
 )
@@ -13,7 +12,6 @@ func NewCommand(client api.Client) *cobra.Command {
 		Short: "Manage project variables",
 	}
 
-	cmd.AddCommand(create.NewCommand(client))
 	cmd.AddCommand(remove.NewCommand(client))
 
 	return cmd

@@ -5,10 +5,11 @@ import (
 
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/completion"
+	"github.com/makkes/gitlab-cli/cmd/create"
+	"github.com/makkes/gitlab-cli/cmd/create/project"
 	"github.com/makkes/gitlab-cli/cmd/get"
 	"github.com/makkes/gitlab-cli/cmd/inspect"
 	"github.com/makkes/gitlab-cli/cmd/login"
-	"github.com/makkes/gitlab-cli/cmd/project"
 	"github.com/makkes/gitlab-cli/cmd/status"
 	"github.com/makkes/gitlab-cli/cmd/update"
 	"github.com/makkes/gitlab-cli/cmd/variable"
@@ -28,6 +29,7 @@ func Execute(cfg config.Config) {
 
 	rootCmd.AddCommand(inspect.NewCommand(apiClient))
 	rootCmd.AddCommand(get.NewCommand(apiClient, cfg))
+	rootCmd.AddCommand(create.NewCommand(apiClient, cfg))
 
 	rootCmd.AddCommand(project.NewCommand(apiClient))
 	rootCmd.AddCommand(login.NewCommand(apiClient, cfg))
