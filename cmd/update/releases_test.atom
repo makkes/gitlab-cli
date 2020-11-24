@@ -6,10 +6,10 @@
   <title>Release notes from gitlab-cli</title>
   <updated>2019-12-24T08:51:05Z</updated>
   <entry>
-    <id>tag:github.com,2008:Repository/168714048/v4.0.0-beta.1</id>
+    <id>tag:github.com,2008:Repository/168714048/v3.8.0-beta.1</id>
     <updated>2019-12-24T08:58:17Z</updated>
-    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v4.0.0-beta.1"/>
-    <title>v4.0.0-beta.1</title>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.8.0-beta.1"/>
+    <title>v3.8.0-beta.1</title>
     <content type="html">Pre-release with great new stuff</content>
     <author>
       <name>makkes</name>

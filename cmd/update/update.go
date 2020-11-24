@@ -17,18 +17,18 @@ import (
 
 var repo = "https://github.com/makkes/gitlab-cli"
 
-func updateCommand(dryRun bool, includePreReleases bool, out io.Writer, getExecutable func() (string, error)) error {
-	latestVersionString, err := versions.LatestVersion(repo, includePreReleases)
+func updateCommand(dryRun bool, includePreReleases bool, upgradeMajor bool, out io.Writer, getExecutable func() (string, error)) error {
+	currentVersion, err := semver.ParseTolerant(config.Version)
+	if err != nil {
+		return fmt.Errorf("Could not parse current version '%s': %w", config.Version, err)
+	}
+	latestVersionString, err := versions.LatestVersion(repo, currentVersion, upgradeMajor, includePreReleases)
 	if err != nil {
 		return fmt.Errorf("Could not fetch latest version: %w", err)
 	}
 	latestVersion, err := semver.ParseTolerant(latestVersionString)
 	if err != nil {
 		return fmt.Errorf("Could not parse latest version '%s': %w", latestVersionString, err)
-	}
-	currentVersion, err := semver.ParseTolerant(config.Version)
-	if err != nil {
-		return fmt.Errorf("Could not parse current version '%s': %w", config.Version, err)
 	}
 	if currentVersion.Compare(latestVersion) == -1 {
 		if dryRun {
@@ -76,17 +76,19 @@ func updateCommand(dryRun bool, includePreReleases bool, out io.Writer, getExecu
 
 func NewCommand() *cobra.Command {
 	var dryRun *bool
+	var upgradeMajor *bool
 
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update GitLab CLI to latest version",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return updateCommand(*dryRun, false, os.Stdout, os.Executable)
+			return updateCommand(*dryRun, false, *upgradeMajor, os.Stdout, os.Executable)
 		},
 	}
 
 	dryRun = cmd.Flags().BoolP("dry-run", "d", false, "Only check if an update is available")
+	upgradeMajor = cmd.Flags().BoolP("major", "", false, "Upgrade major version, if available")
 
 	return cmd
 }
