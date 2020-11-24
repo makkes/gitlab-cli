@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/makkes/gitlab-cli/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/makkes/gitlab-cli/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/makkes/gitlab-cli/releases.atom"/>
+  <title>Release notes from gitlab-cli</title>
+  <updated>2019-12-24T08:51:05Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v4.0.0-beta.1</id>
+    <updated>2019-12-24T08:58:17Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v4.0.0-beta.1"/>
+    <title>v4.0.0-beta.1</title>
+    <content type="html">New major version with great new stuff</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/168714048/v3.6.3</id>
+    <updated>2019-12-23T08:58:17Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/makkes/gitlab-cli/releases/tag/v3.6.3"/>
+    <title>3.6.3</title>
+    <content type="html">&lt;h1&gt;Minor enhancements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &#39;--dry-run&#39; flag to the &#39;update&#39; cmd&lt;/li&gt;
+&lt;/ul&gt;</content>
+    <author>
+      <name>makkes</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars0.githubusercontent.com/u/387444?s=60&amp;v=4"/>
+  </entry>
+</feed>

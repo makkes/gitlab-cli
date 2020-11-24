@@ -9,7 +9,7 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-func LatestVersion(repo string, includePreReleases bool) (string, error) {
+func LatestVersion(repo string, currentVersion semver.Version, upgradeMajor, includePreReleases bool) (string, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL(repo + "/releases.atom")
 	if err != nil {
@@ -30,6 +30,9 @@ func LatestVersion(repo string, includePreReleases bool) (string, error) {
 		}
 		if v.Pre != nil && !includePreReleases {
 			continue // this is a pre-release, skip it
+		}
+		if v.Major > currentVersion.Major && !upgradeMajor {
+			continue // this is a new major version, skip ip
 		}
 		return fmt.Sprintf("v%s", v.String()), nil
 	}
