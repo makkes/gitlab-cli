@@ -17,10 +17,6 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Display one or more objects",
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-
-			return nil
-		},
 	}
 
 	project = cmd.PersistentFlags().StringP("project", "p", "", "If present, the project scope for this CLI request")

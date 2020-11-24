@@ -1,4 +1,4 @@
-package create
+package project
 
 import (
 	"encoding/json"
@@ -34,7 +34,7 @@ Clone via HTTP: %s
 
 func NewCommand(client api.Client) *cobra.Command {
 	return &cobra.Command{
-		Use:   "create NAME",
+		Use:   "project NAME",
 		Short: "Create a new project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
