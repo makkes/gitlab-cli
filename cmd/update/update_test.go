@@ -20,14 +20,17 @@ import (
 func TestUpdate(t *testing.T) {
 	tests := map[string]struct {
 		currentVersion string
+		updatedVersion string
 		updatedBinary  []byte
 		dryRun         bool
+		pre            bool
 		repo           string
 		out            *regexp.Regexp
 		outErr         bool
 	}{
 		"update happy path": {
 			currentVersion: "3.6.2-55-ghf448b",
+			updatedVersion: "3.6.3",
 			updatedBinary:  []byte("this is the updated gitlab binary"),
 			out:            regexp.MustCompile(`^Updating to v3.6.3\n`),
 		},
@@ -44,6 +47,7 @@ func TestUpdate(t *testing.T) {
 		},
 		"dry-run update happy path": {
 			currentVersion: "3.6.2-55-ghf448b",
+			updatedVersion: "3.6.3",
 			updatedBinary:  []byte{},
 			dryRun:         true,
 			out:            regexp.MustCompile(`^A new version is available: v3.6.3\nSee http://127.0.0.1:\d+/releases/v3.6.3 for details\n`),
@@ -54,6 +58,23 @@ func TestUpdate(t *testing.T) {
 			out:           regexp.MustCompile(`^Could not fetch latest version: `),
 			updatedBinary: []byte{},
 		},
+		"dry-run update to pre-release": {
+			currentVersion: "3.6.3",
+			updatedVersion: "4.0.0-beta.1",
+			updatedBinary:  []byte{},
+			dryRun:         true,
+			pre:            true,
+			out:            regexp.MustCompile(`^A new version is available: v4.0.0-beta.1\nSee http://127.0.0.1:\d+/releases/v4.0.0-beta.1 for details\n`),
+		},
+		"update to pre-release": {
+			currentVersion: "3.6.3",
+			updatedVersion: "4.0.0-beta.1",
+			updatedBinary:  []byte("the updated binary"),
+			dryRun:         false,
+			pre:            true,
+			out:            regexp.MustCompile(`^Updating to v4.0.0-beta.1\n`),
+		},
+
 	}
 
 	for name, tc := range tests {
@@ -69,7 +90,7 @@ func TestUpdate(t *testing.T) {
 				switch r.RequestURI {
 				case "/releases.atom":
 					w.Write(releasesFeed)
-				case fmt.Sprintf("/releases/download/v3.6.3/gitlab_v3.6.3_%s_%s", runtime.GOOS, runtime.GOARCH):
+				case fmt.Sprintf("/releases/download/v%s/gitlab_v%s_%s_%s", tc.updatedVersion, tc.updatedVersion, runtime.GOOS, runtime.GOARCH):
 					w.Write([]byte(tc.updatedBinary))
 				default:
 					t.Errorf("Unexpected request for %s", r.RequestURI)
@@ -84,7 +105,7 @@ func TestUpdate(t *testing.T) {
 			config.Version = tc.currentVersion
 			var out strings.Builder
 
-			err = updateCommand(tc.dryRun, &out, func() (string, error) { return outFile.Name(), nil })
+			err = updateCommand(tc.dryRun, tc.pre, &out, func() (string, error) { return outFile.Name(), nil })
 
 			if tc.outErr {
 				require.Error(t, err)
