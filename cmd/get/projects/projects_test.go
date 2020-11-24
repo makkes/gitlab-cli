@@ -108,7 +108,7 @@ func TestFormattedOutput(t *testing.T) {
 	config := &mock.Config{
 		CacheData: &mock.Cache{},
 	}
-	err := projectsCommand(client, config, "go-template={{.Name}}", 0, false, &out)
+	err := projectsCommand(client, config, `go-template={{range .}}{{.Name}}{{"\n"}}{{end}}`, 0, false, &out)
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}

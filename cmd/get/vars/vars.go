@@ -36,11 +36,6 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 				return fmt.Errorf("cannot list variables: %s", err)
 			}
 
-			varIfs := make([]interface{}, len(vars))
-			for idx, v := range vars {
-				varIfs[idx] = v
-			}
-
 			return output.Print(resp, *format, os.Stdout, func() error {
 				table.PrintVars(os.Stdout, vars)
 				return nil
@@ -49,7 +44,7 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 					fmt.Fprintf(os.Stdout, "%s\n", v.Key)
 				}
 				return nil
-			}, varIfs)
+			}, vars)
 		},
 	}
 }

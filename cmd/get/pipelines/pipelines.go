@@ -83,11 +83,6 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 				return err
 			}
 
-			pdIfs := make([]interface{}, len(pds))
-			for idx, pd := range pds {
-				pdIfs[idx] = pd
-			}
-
 			return output.Print(resp, *format, os.Stdout, func() error {
 				table.PrintPipelines(pds)
 				return nil
@@ -96,7 +91,7 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 					fmt.Printf("%d:%d\n", p.ProjectID, p.ID)
 				}
 				return nil
-			}, pdIfs)
+			}, pds)
 		},
 	}
 

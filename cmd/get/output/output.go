@@ -13,7 +13,7 @@ import (
 
 var ErrUnknownFormatRequested error = fmt.Errorf("unknown output format requested")
 
-func Print(b []byte, format string, out io.Writer, tableFunc func() error, nameFunc func() error, items []interface{}) error {
+func Print(b []byte, format string, out io.Writer, tableFunc func() error, nameFunc func() error, items interface{}) error {
 	switch {
 	case format == "json":
 		var buf bytes.Buffer
@@ -31,12 +31,9 @@ func Print(b []byte, format string, out io.Writer, tableFunc func() error, nameF
 		if err != nil {
 			return fmt.Errorf("template parsing error: %s", err)
 		}
-		for _, p := range items {
-			err = tmpl.Execute(out, p)
-			if err != nil {
-				return fmt.Errorf("template parsing error: %s", err)
-			}
-			fmt.Fprintln(out)
+		err = tmpl.Execute(out, items)
+		if err != nil {
+			return fmt.Errorf("template parsing error: %s", err)
 		}
 		return nil
 	default:
