@@ -1,4 +1,4 @@
-package variable
+package vars
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 
 func NewCommand(client api.Client, project *string) *cobra.Command {
 	return &cobra.Command{
-		Use:   "variable KEY VALUE [ENVIRONMENT_SCOPE]",
+		Use:   "var KEY VALUE [ENVIRONMENT_SCOPE]",
 		Short: "Create a project-level variable",
 		Long:  "Create a project-level variable. The KEY may only contain the characters A-Z, a-z, 0-9, and _ and must be no longer than 255 characters.",
 		Args:  cobra.RangeArgs(2, 3),

@@ -3,16 +3,16 @@ package cmd
 import (
 	"os"
 
+	"github.com/makkes/gitlab-cli/cmd/delete"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/completion"
 	"github.com/makkes/gitlab-cli/cmd/create"
-	"github.com/makkes/gitlab-cli/cmd/create/project"
 	"github.com/makkes/gitlab-cli/cmd/get"
 	"github.com/makkes/gitlab-cli/cmd/inspect"
 	"github.com/makkes/gitlab-cli/cmd/login"
 	"github.com/makkes/gitlab-cli/cmd/status"
 	"github.com/makkes/gitlab-cli/cmd/update"
-	"github.com/makkes/gitlab-cli/cmd/variable"
 	"github.com/makkes/gitlab-cli/cmd/version"
 	"github.com/makkes/gitlab-cli/config"
 	"github.com/spf13/cobra"
@@ -30,10 +30,9 @@ func Execute(cfg config.Config) {
 	rootCmd.AddCommand(inspect.NewCommand(apiClient))
 	rootCmd.AddCommand(get.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(create.NewCommand(apiClient, cfg))
+	rootCmd.AddCommand(delete.NewCommand(apiClient, cfg))
 
-	rootCmd.AddCommand(project.NewCommand(apiClient))
 	rootCmd.AddCommand(login.NewCommand(apiClient, cfg))
-	rootCmd.AddCommand(variable.NewCommand(apiClient))
 	rootCmd.AddCommand(status.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(completion.NewCommand(rootCmd))
 	rootCmd.AddCommand(version.NewCommand())

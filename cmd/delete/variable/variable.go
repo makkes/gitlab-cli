@@ -1,4 +1,4 @@
-package remove
+package variable
 
 import (
 	"fmt"
@@ -9,20 +9,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.Client) *cobra.Command {
+func NewCommand(client api.Client, project *string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove PROJECT KEY [KEY...]",
-		Short: "Remove project-level variables",
-		Args:  cobra.MinimumNArgs(2),
+		Use:   "vars KEY [KEY...]",
+		Short: "Delete project-level variables",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// silence errors since we already log an error for every single variable
 			cmd.SilenceErrors = true
-			project, err := client.FindProject(args[0])
+			if project == nil || *project == "" {
+				return fmt.Errorf("please provide a project scope")
+			}
+			project, err := client.FindProject(*project)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error removing variables: %s\n", err)
 				return
 			}
-			for _, key := range args[1:] {
+			for _, key := range args[0:] {
 				status, err := client.Delete(fmt.Sprintf("/projects/%d/variables/%s", project.ID, url.PathEscape(key)))
 				if err != nil {
 					if status == 404 {
