@@ -41,27 +41,6 @@ func projectsCommand(client api.Client, cfg config.Config, format string, page i
 	}
 	cfg.Write()
 
-	// if format != "" {
-	// 	tmpl, err := template.New("").Parse(format)
-	// 	if err != nil {
-	// 		return fmt.Errorf("template parsing error: %s", err)
-	// 	}
-
-	// 	for _, p := range projects {
-	// 		err = tmpl.Execute(out, p)
-	// 		if err != nil {
-	// 			return fmt.Errorf("template parsing error: %s", err)
-	// 		}
-	// 		fmt.Fprintln(out)
-	// 	}
-	// 	return nil
-	// }
-
-	projectsIf := make([]interface{}, len(projects))
-	for idx, p := range projects {
-		projectsIf[idx] = p
-	}
-
 	return output.Print(resp, format, out, func() error {
 		table.PrintProjects(out, projects)
 		return nil
@@ -70,7 +49,7 @@ func projectsCommand(client api.Client, cfg config.Config, format string, page i
 			fmt.Fprintf(out, "%s\n", p.Name)
 		}
 		return nil
-	}, projectsIf)
+	}, projects)
 }
 
 func NewCommand(client api.Client, cfg config.Config, format *string) *cobra.Command {

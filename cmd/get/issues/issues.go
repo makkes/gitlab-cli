@@ -34,10 +34,6 @@ func issuesCommand(scope string, format string, client api.Client, all bool, pag
 	if err != nil {
 		return err
 	}
-	issuesIf := make([]interface{}, len(issues))
-	for idx, i := range issues {
-		issuesIf[idx] = i
-	}
 
 	return output.Print(resp, format, out, func() error {
 		table.PrintIssues(out, issues)
@@ -47,7 +43,7 @@ func issuesCommand(scope string, format string, client api.Client, all bool, pag
 			fmt.Fprintf(out, "%s\n", issue.Title)
 		}
 		return nil
-	}, issuesIf)
+	}, issues)
 }
 
 func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
