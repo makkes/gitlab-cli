@@ -59,7 +59,7 @@ If you would like to just check for availability of a new version, use the `--dr
 gitlab update --dry-run
 ```
 
-For the brave companions, there's also the `--pre` flag which will update to the next pre-release (i.e. alpha, beta or release candidate) version:
+For the brave companions, there's also the `--pre` flag (available since 3.7.3) which will update to the next pre-release (i.e. alpha, beta or release candidate) version:
 ```
 gitlab update --pre
 ```
