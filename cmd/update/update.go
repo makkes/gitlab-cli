@@ -77,17 +77,19 @@ func updateCommand(dryRun bool, includePreReleases bool, upgradeMajor bool, out 
 func NewCommand() *cobra.Command {
 	var dryRun *bool
 	var upgradeMajor *bool
+	var includePre *bool
 
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update GitLab CLI to latest version",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return updateCommand(*dryRun, false, *upgradeMajor, os.Stdout, os.Executable)
+			return updateCommand(*dryRun, *includePre, *upgradeMajor, os.Stdout, os.Executable)
 		},
 	}
 
 	dryRun = cmd.Flags().BoolP("dry-run", "d", false, "Only check if an update is available")
+	includePre = cmd.Flags().BoolP("pre", "", false, "Upgrade to next pre-release version, if available")
 	upgradeMajor = cmd.Flags().BoolP("major", "", false, "Upgrade major version, if available")
 
 	return cmd
