@@ -43,6 +43,27 @@ read_registry scopes.
 Since version 3.6 the CLI has an `update` command that you can use to update the
 CLI's version so you don't have to download the latest release every time.
 
+Running
+```
+gitlab update
+```
+will update your version to the latest stable release of the current **major** release, so it would update from e.g. 3.7.1 to 3.8.0 but not to 4.0.0. If you'd like to upgrade to the next major release, provide the `--major` flag (available since 3.7.2):
+```
+gitlab update --major
+```
+
+### Dry-run and pre-release updates
+
+If you would like to just check for availability of a new version, use the `--dry-run` flag:
+```
+gitlab update --dry-run
+```
+
+For the brave companions, there's also the `--pre` flag which will update to the next pre-release (i.e. alpha, beta or release candidate) version:
+```
+gitlab update --pre
+```
+
 ## Commands
 
 Currently GitLab CLI supports these commands:
