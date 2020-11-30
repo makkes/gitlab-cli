@@ -88,7 +88,7 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	dryRun = cmd.Flags().BoolP("dry-run", "d", false, "Only check if an update is available")
+	dryRun = cmd.Flags().BoolP("dry-run", "n", false, "Only check if an update is available")
 	includePre = cmd.Flags().BoolP("pre", "", false, "Upgrade to next pre-release version, if available")
 	upgradeMajor = cmd.Flags().BoolP("major", "", false, "Upgrade major version, if available")
 
