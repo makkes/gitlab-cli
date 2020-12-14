@@ -1,19 +1,31 @@
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 name: Release
 jobs:
-    generate:
-        name: Create CLI binaries
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout the repository
-            uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
-          - name: Generate artifacts
-            uses: skx/github-action-build@5ca2e55b7ba4583d27b0e4c256685dd7fffb4acf
-          - name: Upload artifacts
-            uses: skx/github-action-publish-binaries@cafb819f9432619c3331782ffbbb752f1e2be626
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            with:
-                args: 'build/gitlab_*'
+  create_release:
+    name: Create GitHub release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            TBD
+          draft: false
+          prerelease: false
+      - name: Generate artifacts
+        uses: skx/github-action-build@5ca2e55b7ba4583d27b0e4c256685dd7fffb4acf
+      - name: Upload artifacts
+        uses: alexellis/upload-assets@0.2.3
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          asset_paths: '["./build/gitlab_*"]'
