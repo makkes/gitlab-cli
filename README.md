@@ -78,18 +78,6 @@ Currently GitLab CLI supports these commands:
 * `issue`: Manage issues
 * `status`: Display the current configuration of GitLab CLI
 
-## Bash Completion
-
-You can get your Bash to complete GitLab CLI commands very easily: Just type the
-following line in your shell:
-
-```sh
-. <(gitlab completion)
-```
-
-To have completion set up for you automatically just copy and paste the line
-from above into your `~/.bashrc` or `~/.profile`.
-
 ## License
 
 This software is distributed under the BSD 2-Clause License, see
