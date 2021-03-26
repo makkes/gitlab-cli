@@ -75,7 +75,7 @@ do_install() {
     curl --progress-bar -fLo "${tmpdir}"/gitlab "${download_url}"
     [ "$?" != "0" ] && echoerr "Error downloading from ${download_url}" && exit 1
     set -e
-    install -t "${target_dir}" "${tmpdir}/gitlab"
+    install "${tmpdir}/gitlab" "${target_dir}"
 
     echo "Installed gitlab ${release_tag} into ${target_dir}"
 }
