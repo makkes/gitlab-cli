@@ -1,26 +1,34 @@
 package completion
 
 import (
-	"os"
-
+	"github.com/makkes/gitlab-cli/cmd/completion/bash"
+	"github.com/makkes/gitlab-cli/cmd/completion/zsh"
 	"github.com/spf13/cobra"
 )
 
 func NewCommand(rootCmd *cobra.Command) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "completion",
-		Short: "Generates bash completion scripts",
-		Long: `To load completions in the current shell run
+		Short: "Generate shell completion scripts",
+		Long: `Generate shell completion scripts
+		
+To load completions in the current shell run
 
-. <(gitlab completion)
+source <(gitlab completion SHELL)
 		
 To configure your bash shell to load completions for each session add the
 following line to your ~/.bashrc or ~/.profile:
 
-. <(gitlab completion)
+source <(gitlab completion bash)
+
+If you use the zsh shell, run this command to permanently load completions:
+
+gitlab completion zsh |sudo tee "${fpath[1]}/_gitlab"
 `,
-		Run: func(cmd *cobra.Command, args []string) {
-			rootCmd.GenBashCompletion(os.Stdout)
-		},
 	}
+
+	cmd.AddCommand(bash.NewCommand(rootCmd))
+	cmd.AddCommand(zsh.NewCommand(rootCmd))
+
+	return cmd
 }
