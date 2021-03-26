@@ -8,7 +8,7 @@ import (
 
 func NewCommand(rootCmd *cobra.Command) *cobra.Command {
 	return &cobra.Command{
-		Use: "bash",
+		Use:   "bash",
 		Short: "generate bash completion",
 		Run: func(cmd *cobra.Command, args []string) {
 			rootCmd.GenBashCompletion(os.Stdout)
