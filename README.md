@@ -68,27 +68,37 @@ gitlab update --pre
 
 Currently GitLab CLI supports these commands:
 
-* `projects`: List all your projects
-* `project`:  List details about a project by ID or name
-* `project create`: Create a new project
-* `var`: Manage project variables
-* `pipelines`: List pipelines of a project
-* `pipeline`: List details of a pipeline
-* `issues`: List all issues of a project
-* `issue`: Manage issues
-* `status`: Display the current configuration of GitLab CLI
+- `completion`  Generate shell completion scripts
+- `create`      Create a resource such as a project or a variable
+- `delete`      Delete resources such as projects or variables
+- `get`         Display one or more objects
+- `help`        Help about any command
+- `inspect`     Show details of a specific object
+- `login`       Login to GitLab. If URL is omitted then https://gitlab.com is used.
+- `status`      Display the current configuration of GitLab CLI
+- `update`      Update GitLab CLI to latest version
+- `version`     Display the version of GitLab CLI
 
-## Bash Completion
+## Shell Completion
 
-You can get your Bash to complete GitLab CLI commands very easily: Just type the
-following line in your shell:
+To load completions in the current shell run
 
 ```sh
-. <(gitlab completion)
+source <(gitlab completion SHELL)
 ```
 
-To have completion set up for you automatically just copy and paste the line
-from above into your `~/.bashrc` or `~/.profile`.
+To configure your bash shell to load completions for each session add the
+following line to your ~/.bashrc or ~/.profile:
+
+```sh
+source <(gitlab completion bash)
+```
+
+If you use the zsh shell, run this command to permanently load completions:
+
+```sh
+gitlab completion zsh |sudo tee "${fpath[1]}/_gitlab"
+```
 
 ## License
 
