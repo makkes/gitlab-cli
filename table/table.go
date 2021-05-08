@@ -46,7 +46,7 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 	return res
 }
 
-func calcJobsColumnWidths(jobs api.Jobs) map[string]int {
+func calcJobsColumnWidths() map[string]int {
 	res := make(map[string]int)
 	res["id"] = 20
 	res["status"] = 20
@@ -138,7 +138,7 @@ func calcVarColumnWidths(vars []api.Var) map[string]int {
 }
 
 func PrintJobs(jobs api.Jobs) {
-	widths := calcJobsColumnWidths(jobs)
+	widths := calcJobsColumnWidths()
 	fmt.Printf("%s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("STATUS", widths["status"]),
