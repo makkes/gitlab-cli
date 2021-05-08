@@ -3,6 +3,8 @@ package get
 import (
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/get/issues"
+	"github.com/makkes/gitlab-cli/cmd/get/jobs"
+	"github.com/makkes/gitlab-cli/cmd/get/logs"
 	"github.com/makkes/gitlab-cli/cmd/get/output"
 	"github.com/makkes/gitlab-cli/cmd/get/pipelines"
 	"github.com/makkes/gitlab-cli/cmd/get/projects"
@@ -12,20 +14,20 @@ import (
 )
 
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
-	var project *string
 	var format *string
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Display one or more objects",
 	}
 
-	project = cmd.PersistentFlags().StringP("project", "p", "", "If present, the project scope for this CLI request")
 	format = output.AddFlag(cmd)
 
-	cmd.AddCommand(issues.NewCommand(client, project, format))
-	cmd.AddCommand(pipelines.NewCommand(client, project, format))
+	cmd.AddCommand(issues.NewCommand(client, format))
+	cmd.AddCommand(pipelines.NewCommand(client, format))
 	cmd.AddCommand(projects.NewCommand(client, cfg, format))
-	cmd.AddCommand(vars.NewCommand(client, project, format))
+	cmd.AddCommand(vars.NewCommand(client, format))
+	cmd.AddCommand(jobs.NewCommand(client, format))
+	cmd.AddCommand(logs.NewCommand(client))
 
 	return cmd
 }

@@ -12,19 +12,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
+func NewCommand(client api.Client, format *string) *cobra.Command {
 	var all *bool
 	var recent *bool
+	var projectFlag *string
+
 	cmd := &cobra.Command{
 		Use:   "pipelines",
 		Short: "List pipelines in a project",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if project == nil || *project == "" {
+			if projectFlag == nil || *projectFlag == "" {
 				return fmt.Errorf("please provide a project scope")
 			}
-			project, err := client.FindProject(*project)
+			project, err := client.FindProject(*projectFlag)
 			if err != nil {
-				return fmt.Errorf("Cannot list pipelines: %s", err)
+				return fmt.Errorf("cannot list pipelines: %s", err)
 			}
 			resp, _, err := client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines")
 			if err != nil {
@@ -50,7 +52,7 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 				respSlice = respSlice[0:1]
 			}
 			if len(pipelines) <= 0 {
-				return fmt.Errorf("No pipelines found for project '%s'", args[0])
+				return fmt.Errorf("no pipelines found for project '%s'", *projectFlag)
 			}
 
 			filteredRespSlice := make([]map[string]interface{}, 0)
@@ -95,6 +97,7 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 		},
 	}
 
+	projectFlag = cmd.PersistentFlags().StringP("project", "p", "", "If present, the project scope for this CLI request")
 	all = cmd.Flags().BoolP("all", "a", false, "Show all pipelines (default shows just running/pending.)")
 	recent = cmd.Flags().BoolP("recent", "r", false, "Show only the most recent pipeline")
 

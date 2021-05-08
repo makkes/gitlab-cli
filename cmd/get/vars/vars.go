@@ -13,8 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
-	return &cobra.Command{
+func NewCommand(client api.Client, format *string) *cobra.Command {
+	var project *string
+
+	cmd := &cobra.Command{
 		Use:   "vars",
 		Short: "List variables in a project",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -47,4 +49,8 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 			}, vars)
 		},
 	}
+
+	project = cmd.PersistentFlags().StringP("project", "p", "", "If present, the project scope for this CLI request")
+
+	return cmd
 }

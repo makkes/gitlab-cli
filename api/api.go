@@ -14,7 +14,7 @@ import (
 	"github.com/makkes/gitlab-cli/config"
 )
 
-var ErrNotLoggedIn = errors.New("You are not logged in")
+var ErrNotLoggedIn = errors.New("you are not logged in")
 
 type Client interface {
 	Get(path string) ([]byte, int, error)

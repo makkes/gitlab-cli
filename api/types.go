@@ -42,6 +42,15 @@ type Var struct {
 	EnvironmentScope string `json:"environment_scope"`
 }
 
+type Job struct {
+	ID        int    `json:"id"`
+	ProjectID int    `json:"project_id"`
+	Stage     string `json:"stage"`
+	Status    string `json:"status"`
+}
+
+type Jobs []Job
+
 func (pd PipelineDetails) Duration(now time.Time) string {
 	if pd.Status == "running" {
 		started := pd.StartedAt

@@ -46,11 +46,20 @@ func calcProjectColumnWidths(ps []api.Project) map[string]int {
 	return res
 }
 
+func calcJobsColumnWidths(jobs api.Jobs) map[string]int {
+	res := make(map[string]int)
+	res["id"] = 20
+	res["status"] = 20
+	res["stage"] = 10
+	return res
+}
+
 func calcPipelineColumnWidths(pipelines []api.PipelineDetails, now time.Time) map[string]int {
 	res := make(map[string]int)
 	res["id"] = 20
 	res["status"] = 20
 	res["duration"] = 10
+	res["started_at"] = 25
 	res["url"] = 50
 	for _, p := range pipelines {
 		w := len(fmt.Sprintf("%d:%d", p.ProjectID, p.ID))
@@ -128,18 +137,34 @@ func calcVarColumnWidths(vars []api.Var) map[string]int {
 	return res
 }
 
+func PrintJobs(jobs api.Jobs) {
+	widths := calcJobsColumnWidths(jobs)
+	fmt.Printf("%s %s %s\n",
+		pad("ID", widths["id"]),
+		pad("STATUS", widths["status"]),
+		pad("STAGE", widths["stage"]))
+	for _, j := range jobs {
+		fmt.Printf("%s %s %s\n",
+			pad(fmt.Sprintf("%d:%d", j.ProjectID, j.ID), widths["id"]),
+			pad(j.Status, widths["status"]),
+			pad(j.Stage, widths["stage"]))
+	}
+}
+
 func PrintPipelines(ps []api.PipelineDetails) {
 	widths := calcPipelineColumnWidths(ps, time.Now())
-	fmt.Printf("%s %s %s %s\n",
+	fmt.Printf("%s %s %s %s %s\n",
 		pad("ID", widths["id"]),
 		pad("STATUS", widths["status"]),
 		pad("DURATION", widths["duration"]),
+		pad("STARTED AT", widths["started_at"]),
 		pad("URL", widths["url"]))
 	for _, p := range ps {
-		fmt.Printf("%s %s %s %s\n",
+		fmt.Printf("%s %s %s %s %s\n",
 			pad(fmt.Sprintf("%d:%d", p.ProjectID, p.ID), widths["id"]),
 			pad(p.Status, widths["status"]),
 			pad(p.Duration(time.Now()), widths["duration"]),
+			pad(p.StartedAt.Format("2006-01-02 15:04:05 MST"), widths["started_at"]),
 			pad(p.URL, widths["url"]))
 	}
 }

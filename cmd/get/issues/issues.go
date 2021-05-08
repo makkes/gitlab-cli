@@ -46,9 +46,10 @@ func issuesCommand(scope string, format string, client api.Client, all bool, pag
 	}, issues)
 }
 
-func NewCommand(client api.Client, project *string, format *string) *cobra.Command {
+func NewCommand(client api.Client, format *string) *cobra.Command {
 	var all *bool
 	var page *int
+	var project *string
 	cmd := &cobra.Command{
 		Use:   "issues",
 		Short: "List issues in a project",
@@ -60,6 +61,7 @@ func NewCommand(client api.Client, project *string, format *string) *cobra.Comma
 		},
 	}
 
+	project = cmd.PersistentFlags().StringP("project", "p", "", "If present, the project scope for this CLI request")
 	all = cmd.Flags().BoolP("all", "a", false, "Show all issues (default shows just open)")
 	page = cmd.Flags().Int("page", 1, "Page of results to display")
 	return cmd
