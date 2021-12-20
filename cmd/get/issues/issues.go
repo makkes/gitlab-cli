@@ -35,7 +35,7 @@ func issuesCommand(scope string, format string, client api.Client, all bool, pag
 		return err
 	}
 
-	return output.Print(resp, format, out, func() error {
+	return output.NewPrinter().Print(format, out, func() error {
 		table.PrintIssues(out, issues)
 		return nil
 	}, func() error {

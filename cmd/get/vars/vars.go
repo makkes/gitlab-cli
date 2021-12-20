@@ -17,7 +17,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 	var project *string
 
 	cmd := &cobra.Command{
-		Use:   "vars",
+		Use:   "vars [VARNAME]",
 		Short: "List variables in a project",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if project == nil || *project == "" {
@@ -37,8 +37,24 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("cannot list variables: %s", err)
 			}
+			if args[0] != "" {
+				found := false
+				for _, variable := range vars {
+					if variable.Key == args[0] {
+						found = true
+						vars = []api.Var{variable}
+						break
+					}
+				}
+				if !found {
+					// var requested that doesn't exist
+					vars = []api.Var{}
+				}
+			}
 
-			return output.Print(resp, *format, os.Stdout, func() error {
+			return output.NewPrinter(
+				output.NoListWithSingleEntry(),
+			).Print(*format, os.Stdout, func() error {
 				table.PrintVars(os.Stdout, vars)
 				return nil
 			}, func() error {

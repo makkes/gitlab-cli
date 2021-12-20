@@ -85,7 +85,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 				return err
 			}
 
-			return output.Print(resp, *format, os.Stdout, func() error {
+			return output.NewPrinter().Print(*format, os.Stdout, func() error {
 				table.PrintPipelines(pds)
 				return nil
 			}, func() error {

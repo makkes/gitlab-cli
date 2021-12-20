@@ -15,11 +15,11 @@ func NewCommand(client api.Client, project *string) *cobra.Command {
 		Short: "Delete project-level variables",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// silence errors since we already log an error for every single variable
-			cmd.SilenceErrors = true
 			if project == nil || *project == "" {
 				return fmt.Errorf("please provide a project scope")
 			}
+			// silence errors now since we already log an error for every single variable
+			cmd.SilenceErrors = true
 			project, err := client.FindProject(*project)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error removing variables: %s\n", err)
