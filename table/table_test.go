@@ -138,13 +138,15 @@ func TestIssuesTable(t *testing.T) {
 			"empty input",
 			&strings.Builder{},
 			[]api.Issue{},
-			"ID                   TITLE                          STATE      URL                                               \n",
+			"ID                   TITLE                          STATE      URL                                      " +
+				"         \n",
 		},
 		{
 			"nil input",
 			&strings.Builder{},
 			nil,
-			"ID                   TITLE                          STATE      URL                                               \n",
+			"ID                   TITLE                          STATE      URL                                      " +
+				"         \n",
 		},
 		{
 			"happy path",
@@ -157,8 +159,10 @@ func TestIssuesTable(t *testing.T) {
 					URL:   "This is a uniform resource locator with more than 50 characters",
 				},
 			},
-			`ID                   TITLE                          STATE                 URL                                                            
-0:99                 this is a name with more than… this is a loong state This is a uniform resource locator with more than 50 characters
+			`ID                   TITLE                          STATE                 URL                        ` +
+				`                                    
+0:99                 this is a name with more than… this is a loong state This is a uniform resource locator with ` +
+				`more than 50 characters
 `,
 		},
 	}
@@ -197,27 +201,27 @@ func TestVarsTable(t *testing.T) {
 			&strings.Builder{},
 			[]api.Var{
 				{
-					Key:       "key 1",
-					Value:     "value 1",
-					Protected: false,
+					Key:              "key 1",
+					Value:            "value 1",
+					Protected:        false,
 					EnvironmentScope: "test",
 				},
 				{
-					Key:       "",
-					Value:     "",
-					Protected: true,
+					Key:              "",
+					Value:            "",
+					Protected:        true,
 					EnvironmentScope: "test",
 				},
 				{
-					Key:       "",
-					Value:     "some value",
-					Protected: false,
+					Key:              "",
+					Value:            "some value",
+					Protected:        false,
 					EnvironmentScope: "test",
 				},
 				{
-					Key:       "some key",
-					Value:     "",
-					Protected: false,
+					Key:              "some key",
+					Value:            "",
+					Protected:        false,
 					EnvironmentScope: "test",
 				},
 			},

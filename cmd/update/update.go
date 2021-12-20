@@ -8,31 +8,32 @@ import (
 	"runtime"
 
 	"github.com/blang/semver/v4"
+	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/config"
-
 	"github.com/makkes/gitlab-cli/versions"
-	"github.com/spf13/cobra"
 )
 
 var repo = "https://github.com/makkes/gitlab-cli"
 
-func updateCommand(dryRun bool, includePreReleases bool, upgradeMajor bool, out io.Writer, getExecutable func() (string, error)) error {
+func updateCommand(dryRun bool, includePreReleases bool, upgradeMajor bool, out io.Writer,
+	getExecutable func() (string, error)) error {
 	currentVersion, err := semver.ParseTolerant(config.Version)
 	if err != nil {
-		return fmt.Errorf("Could not parse current version '%s': %w", config.Version, err)
+		return fmt.Errorf("could not parse current version '%s': %w", config.Version, err)
 	}
 	latestVersionString, err := versions.LatestVersion(repo, currentVersion, upgradeMajor, includePreReleases)
 	if err != nil {
-		return fmt.Errorf("Could not fetch latest version: %w", err)
+		return fmt.Errorf("could not fetch latest version: %w", err)
 	}
 	latestVersion, err := semver.ParseTolerant(latestVersionString)
 	if err != nil {
-		return fmt.Errorf("Could not parse latest version '%s': %w", latestVersionString, err)
+		return fmt.Errorf("could not parse latest version '%s': %w", latestVersionString, err)
 	}
 	if currentVersion.Compare(latestVersion) == -1 {
 		if dryRun {
-			fmt.Fprintf(out, "A new version is available: %s\nSee %s for details\n", latestVersionString, repo+"/releases/"+latestVersionString)
+			fmt.Fprintf(out, "A new version is available: %s\nSee %s for details\n",
+				latestVersionString, repo+"/releases/"+latestVersionString)
 			return nil
 		}
 		downloadURL := fmt.Sprintf("%s/releases/download/%s/gitlab_%s_%s_%s",
@@ -40,32 +41,32 @@ func updateCommand(dryRun bool, includePreReleases bool, upgradeMajor bool, out 
 		fmt.Fprintf(out, "Updating to %s\n", latestVersionString)
 		resp, err := http.Get(downloadURL) // #nosec G107
 		if err != nil {
-			return fmt.Errorf("Could not download latest release: %w", err)
+			return fmt.Errorf("could not download latest release: %w", err)
 		}
 		if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("Could not download latest release: received HTTP status %d", resp.StatusCode)
+			return fmt.Errorf("could not download latest release: received HTTP status %d", resp.StatusCode)
 		}
 		exec, err := getExecutable()
 		if err != nil {
-			return fmt.Errorf("Could not get current executable to update: %w", err)
+			return fmt.Errorf("could not get current executable to update: %w", err)
 		}
 		dest := exec + ".new"
 		stat, err := os.Stat(exec)
 		if err != nil {
-			return fmt.Errorf("Could not stat binary for updating: %w", err)
+			return fmt.Errorf("could not stat binary for updating: %w", err)
 		}
 		binary, err := os.OpenFile(dest, os.O_WRONLY|os.O_CREATE, stat.Mode())
 		if err != nil {
-			return fmt.Errorf("Could not open binary for updating: %w", err)
+			return fmt.Errorf("could not open binary for updating: %w", err)
 		}
 		_, err = io.Copy(binary, resp.Body)
 		binary.Close()
 		if err != nil {
-			return fmt.Errorf("Could not download new version: %w", err)
+			return fmt.Errorf("could not download new version: %w", err)
 		}
 		err = os.Rename(dest, exec)
 		if err != nil {
-			return fmt.Errorf("Could not update to new version: %w", err)
+			return fmt.Errorf("could not update to new version: %w", err)
 		}
 	} else {
 		fmt.Fprintf(out, "You're already on the latest version %s.\n", config.Version)

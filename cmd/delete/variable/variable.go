@@ -5,8 +5,9 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func NewCommand(client api.Client, project *string) *cobra.Command {

@@ -6,10 +6,11 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/get/output"
 	"github.com/makkes/gitlab-cli/table"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, format *string) *cobra.Command {
@@ -44,14 +45,14 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if len(pipelines) <= 0 {
+			if len(pipelines) == 0 {
 				return nil
 			}
 			if *recent {
 				pipelines = []api.Pipeline{pipelines[0]}
 				respSlice = respSlice[0:1]
 			}
-			if len(pipelines) <= 0 {
+			if len(pipelines) == 0 {
 				return fmt.Errorf("no pipelines found for project '%s'", *projectFlag)
 			}
 
@@ -68,7 +69,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			for _, p := range filteredPipelines {
 				resp, _, err = client.Get("/projects/" + strconv.Itoa(project.ID) + "/pipelines/" + strconv.Itoa(p.ID))
 				if err != nil {
-					return fmt.Errorf("Error retrieving pipeline %d: %s", p.ID, err)
+					return fmt.Errorf("error retrieving pipeline %d: %s", p.ID, err)
 				}
 				var pd api.PipelineDetails
 				err = json.Unmarshal(resp, &pd)
@@ -80,12 +81,12 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 				}
 			}
 
-			resp, err = json.Marshal(filteredRespSlice)
+			_, err = json.Marshal(filteredRespSlice)
 			if err != nil {
 				return err
 			}
 
-			return output.NewPrinter().Print(*format, os.Stdout, func() error {
+			return output.NewPrinter(os.Stdout).Print(*format, func() error {
 				table.PrintPipelines(pds)
 				return nil
 			}, func() error {

@@ -10,11 +10,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/makkes/gitlab-cli/config"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestUpdate(t *testing.T) {
@@ -52,13 +51,14 @@ func TestUpdate(t *testing.T) {
 			updatedVersion: "3.6.3",
 			updatedBinary:  []byte{},
 			dryRun:         true,
-			out:            regexp.MustCompile(`^A new version is available: v3.6.3\nSee http://127.0.0.1:\d+/releases/v3.6.3 for details\n`),
+			out: regexp.MustCompile(
+				`^A new version is available: v3.6.3\nSee http://127.0.0.1:\d+/releases/v3.6.3 for details\n`),
 		},
 		"unreachable repo": {
 			repo:           "http://doesntexist",
 			currentVersion: "1.3.0",
 			outErr:         true,
-			out:            regexp.MustCompile(`^Could not fetch latest version: `),
+			out:            regexp.MustCompile(`^could not fetch latest version: `),
 			updatedBinary:  []byte{},
 		},
 		"dry-run update to pre-release": {
@@ -67,7 +67,8 @@ func TestUpdate(t *testing.T) {
 			updatedBinary:  []byte{},
 			dryRun:         true,
 			pre:            true,
-			out:            regexp.MustCompile(`^A new version is available: v3.8.0-beta.1\nSee http://127.0.0.1:\d+/releases/v3.8.0-beta.1 for details\n`),
+			out: regexp.MustCompile(
+				`^A new version is available: v3.8.0-beta.1\nSee http://127.0.0.1:\d+/releases/v3.8.0-beta.1 for details\n`),
 		},
 		"update to pre-release": {
 			currentVersion: "3.6.3",
@@ -125,8 +126,9 @@ func TestUpdate(t *testing.T) {
 				switch r.RequestURI {
 				case "/releases.atom":
 					w.Write(releasesFeed)
-				case fmt.Sprintf("/releases/download/v%s/gitlab_v%s_%s_%s", tc.updatedVersion, tc.updatedVersion, runtime.GOOS, runtime.GOARCH):
-					w.Write([]byte(tc.updatedBinary))
+				case fmt.Sprintf("/releases/download/v%s/gitlab_v%s_%s_%s",
+					tc.updatedVersion, tc.updatedVersion, runtime.GOOS, runtime.GOARCH):
+					w.Write(tc.updatedBinary)
 				default:
 					t.Errorf("Unexpected request for %s", r.RequestURI)
 				}
@@ -144,10 +146,11 @@ func TestUpdate(t *testing.T) {
 
 			if tc.outErr {
 				require.Error(t, err)
-				assert.True(t, tc.out.MatchString(err.Error()), "unexpected error: '%s' does not match '%s'", err.Error(), tc.out.String())
+				require.Regexp(t, tc.out, err.Error())
 			} else {
 				require.NoError(t, err)
-				assert.True(t, tc.out.MatchString(out.String()), "unexpected output: '%s' does not match '%s'", out.String(), tc.out.String())
+				assert.True(t, tc.out.MatchString(out.String()),
+					"unexpected output: '%s' does not match '%s'", out.String(), tc.out.String())
 			}
 			updatedContent, err := ioutil.ReadFile(outFile.Name())
 			require.NoError(t, err)

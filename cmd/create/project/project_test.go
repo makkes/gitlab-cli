@@ -17,7 +17,7 @@ func TestClientError(t *testing.T) {
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
-	if err.Error() != "Cannot create project: Some client error" {
+	if err.Error() != "cannot create project: Some client error" {
 		t.Errorf("Unexpected error message '%s'", err)
 	}
 	if out.String() != "" {
@@ -28,13 +28,13 @@ func TestClientError(t *testing.T) {
 func TestUnknownResultFromGitLab(t *testing.T) {
 	var out strings.Builder
 	client := mock.Client{
-		Res: []byte(fmt.Sprintf("This is not JSON")),
+		Res: []byte("This is not JSON"),
 	}
 	err := createCommand(client, []string{"new project"}, &out)
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
-	if err.Error() != "Unexpected result from GitLab API: invalid character 'T' looking for beginning of value" {
+	if err.Error() != "unexpected result from GitLab API: invalid character 'T' looking for beginning of value" {
 		t.Errorf("Unexpected error message '%s'", err)
 	}
 	if out.String() != "" {
@@ -45,10 +45,10 @@ func TestUnknownResultFromGitLab(t *testing.T) {
 func TestHappyPath(t *testing.T) {
 	var out strings.Builder
 	client := mock.Client{
-		Res: []byte(fmt.Sprintf(`{
+		Res: []byte(`{
 			"name": "new project",
 			"ssh_url_to_repo": "SSH clone URL",
-			"http_url_to_repo": "HTTP clone URL"}`)),
+			"http_url_to_repo": "HTTP clone URL"}`),
 	}
 	err := createCommand(client, []string{"new project"}, &out)
 	if err != nil {

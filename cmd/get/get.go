@@ -1,6 +1,8 @@
 package get
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/get/issues"
 	"github.com/makkes/gitlab-cli/cmd/get/jobs"
@@ -10,7 +12,6 @@ import (
 	"github.com/makkes/gitlab-cli/cmd/get/projects"
 	"github.com/makkes/gitlab-cli/cmd/get/vars"
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {

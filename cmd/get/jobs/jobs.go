@@ -8,10 +8,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/get/output"
 	"github.com/makkes/gitlab-cli/table"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, format *string) *cobra.Command {
@@ -27,7 +28,9 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			if len(ids) < 2 || ids[0] == "" || ids[1] == "" {
 				return fmt.Errorf("ID must be of the form PROJECT_ID:PIPELINE_ID")
 			}
-			resp, _, err := client.Get(fmt.Sprintf("/projects/%s/pipelines/%s/jobs", url.PathEscape(ids[0]), url.PathEscape(ids[1])))
+			resp, _, err := client.Get(fmt.Sprintf("/projects/%s/pipelines/%s/jobs",
+				url.PathEscape(ids[0]),
+				url.PathEscape(ids[1])))
 			if err != nil {
 				return fmt.Errorf("error retrieving jobs: %w", err)
 			}
@@ -43,7 +46,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if len(jobs) <= 0 {
+			if len(jobs) == 0 {
 				return nil
 			}
 
@@ -55,7 +58,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 				jobs[idx].ProjectID = projectID
 			}
 
-			return output.NewPrinter().Print(*format, os.Stdout, func() error {
+			return output.NewPrinter(os.Stdout).Print(*format, func() error {
 				table.PrintJobs(jobs)
 				return nil
 			}, func() error {

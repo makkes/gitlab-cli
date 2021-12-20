@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/makkes/gitlab-cli/config"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/config"
 )
 
 func NewCommand() *cobra.Command {

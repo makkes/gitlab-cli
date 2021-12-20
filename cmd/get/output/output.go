@@ -16,12 +16,15 @@ var ErrUnknownFormatRequested error = fmt.Errorf("unknown output format requeste
 
 type Printer struct {
 	noListWithSingleEntry bool
+	out                   io.Writer
 }
 
 type Opt func(p *Printer)
 
-func NewPrinter(opts ...Opt) Printer {
-	p := Printer{}
+func NewPrinter(out io.Writer, opts ...Opt) Printer {
+	p := Printer{
+		out: out,
+	}
 	for _, opt := range opts {
 		opt(&p)
 	}
@@ -34,7 +37,7 @@ func NoListWithSingleEntry() Opt {
 	}
 }
 
-func (p Printer) Print(format string, out io.Writer, tableFunc func() error, nameFunc func() error, items interface{}) error {
+func (p Printer) Print(format string, tableFunc func() error, nameFunc func() error, items interface{}) error {
 	if p.noListWithSingleEntry && reflect.TypeOf(items).Kind() == reflect.Slice && reflect.ValueOf(items).Len() == 1 {
 		items = reflect.ValueOf(items).Index(0).Interface()
 	}
@@ -47,9 +50,11 @@ func (p Printer) Print(format string, out io.Writer, tableFunc func() error, nam
 		if err := enc.Encode(items); err != nil {
 			return fmt.Errorf("error encoding items: %w", err)
 		}
-		buf.WriteTo(out)
-		out.Write([]byte("\n"))
-		return nil
+		if _, err := buf.WriteTo(p.out); err != nil {
+			return err
+		}
+		_, err := p.out.Write([]byte("\n"))
+		return err
 	case format == "name":
 		return nameFunc()
 	case format == "table", format == "":
@@ -60,7 +65,7 @@ func (p Printer) Print(format string, out io.Writer, tableFunc func() error, nam
 		if err != nil {
 			return fmt.Errorf("template parsing error: %s", err)
 		}
-		err = tmpl.Execute(out, items)
+		err = tmpl.Execute(p.out, items)
 		if err != nil {
 			return fmt.Errorf("template parsing error: %s", err)
 		}

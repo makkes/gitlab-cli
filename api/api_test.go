@@ -69,5 +69,4 @@ func TestPipelineDetailsDurationRunning(t *testing.T) {
 			t.Errorf("Unexpected duration: %s", res)
 		}
 	}
-
 }

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/makkes/gitlab-cli/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWrongArgFormat(t *testing.T) {
@@ -31,7 +32,6 @@ func TestWrongArgFormat(t *testing.T) {
 			if err.Error() != "ID must be of the form PROJECT_ID:ISSUE_ID" {
 				t.Errorf("Expected error message to be '' but is '%s'", err.Error())
 			}
-
 		})
 	}
 }
@@ -46,9 +46,7 @@ func TestUnknownProject(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expected non-nil error")
 	}
-	if err.Error() != "Issue pid:iid not found" {
-		t.Errorf("Unexpected error '%s'", err.Error())
-	}
+	require.Equal(t, "issue pid:iid not found", err.Error(), "unexpected error")
 	if out.String() != "" {
 		t.Errorf("Expected output to be empty but it is '%s'", out.String())
 	}

@@ -1,11 +1,8 @@
 package mock
 
 import (
-	"io"
-
-	"github.com/makkes/gitlab-cli/config"
-
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/config"
 )
 
 type Client struct {
@@ -18,7 +15,7 @@ func (m Client) Get(path string) ([]byte, int, error) {
 	return m.Res, m.Status, m.Err
 }
 
-func (m Client) Post(path string, body io.Reader) ([]byte, int, error) {
+func (m Client) Post(path string, body interface{}) ([]byte, int, error) {
 	return m.Res, 0, m.Err
 }
 

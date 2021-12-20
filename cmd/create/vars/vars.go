@@ -5,23 +5,25 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func NewCommand(client api.Client, project *string) *cobra.Command {
 	return &cobra.Command{
 		Use:   "var KEY VALUE [ENVIRONMENT_SCOPE]",
 		Short: "Create a project-level variable",
-		Long:  "Create a project-level variable. The KEY may only contain the characters A-Z, a-z, 0-9, and _ and must be no longer than 255 characters.",
-		Args:  cobra.RangeArgs(2, 3),
+		Long: "Create a project-level variable. The KEY may only contain the characters A-Z, a-z, 0-9, and _ and " +
+			"must be no longer than 255 characters.",
+		Args: cobra.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if project == nil || *project == "" {
 				return fmt.Errorf("please provide a project scope")
 			}
 			project, err := client.FindProject(*project)
 			if err != nil {
-				return fmt.Errorf("Cannot create variable: %s", err)
+				return fmt.Errorf("cannot create variable: %s", err)
 			}
 
 			body := map[string]interface{}{
@@ -33,7 +35,7 @@ func NewCommand(client api.Client, project *string) *cobra.Command {
 			}
 			_, _, err = client.Post("/projects/"+strconv.Itoa(project.ID)+"/variables", body)
 			if err != nil {
-				return fmt.Errorf("Cannot create variable: %s", err)
+				return fmt.Errorf("cannot create variable: %s", err)
 			}
 			return nil
 		},

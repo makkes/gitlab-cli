@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/makkes/gitlab-cli/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestClientError(t *testing.T) {
@@ -20,7 +21,7 @@ func TestClientError(t *testing.T) {
 	if err == nil {
 		t.Error("Expected a non-nil error")
 	}
-	if err.Error() != "Cannot list projects: Some client error" {
+	if err.Error() != "cannot list projects: Some client error" {
 		t.Errorf("Unexpected error message '%s'", err)
 	}
 	if out.String() != "" {
@@ -78,7 +79,8 @@ func TestEmptyResult(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != "ID              NAME                                     URL                                                CLONE                                             \n" {
+	if out.String() != "ID              NAME                                     URL                             "+
+		"                   CLONE                                             \n" {
 		t.Errorf("Expected empty output but got '%s'", out.String())
 	}
 }
@@ -166,12 +168,13 @@ func TestTableOutput(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != `ID              NAME                                     URL                                                CLONE                                             
-123             broken arrow                                                                                                                                  
-456             almanac                                                                                                                                       
-` {
-		t.Errorf("Unexpected output '%s'", out.String())
-	}
+	require.Equal(t, `ID              NAME                                     URL                        `+
+		`                        CLONE                                             
+123             broken arrow                                                                                `+
+		`                                                  
+456             almanac                                                                                     `+
+`                                                  
+`, out.String())
 }
 
 func TestEmptyTableOutput(t *testing.T) {
@@ -186,7 +189,8 @@ func TestEmptyTableOutput(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error but got '%s'", err)
 	}
-	if out.String() != "ID              NAME                                     URL                                                CLONE                                             \n" {
+	if out.String() != "ID              NAME                                     URL                                "+
+		"                CLONE                                             \n" {
 		t.Errorf("Unexpected output '%s'", out.String())
 	}
 }
@@ -227,7 +231,7 @@ func TestNewCommand(t *testing.T) {
 
 	memberFlag := flags.Lookup("member")
 	if memberFlag == nil {
-		t.Errorf("Expected 'member' flag to exist")
+		t.Fatalf("Expected 'member' flag to exist")
 	}
 	if memberFlag.Value.Type() != "bool" {
 		t.Errorf("Expected 'member' flag to be a bool but is %s", memberFlag.Value.Type())
@@ -238,7 +242,7 @@ func TestNewCommand(t *testing.T) {
 
 	pageFlag := flags.Lookup("page")
 	if pageFlag == nil {
-		t.Errorf("Expected 'page' flag to exist")
+		t.Fatalf("Expected 'page' flag to exist")
 	}
 	if pageFlag.Value.Type() != "int" {
 		t.Errorf("Expected 'page' flag to be a bool but is %s", pageFlag.Value.Type())

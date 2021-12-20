@@ -7,8 +7,9 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func createCommand(client api.Client, args []string, out io.Writer) error {
@@ -16,12 +17,12 @@ func createCommand(client api.Client, args []string, out io.Writer) error {
 		"name": url.QueryEscape(args[0]),
 	})
 	if err != nil {
-		return fmt.Errorf("Cannot create project: %s", err)
+		return fmt.Errorf("cannot create project: %s", err)
 	}
 	createdProject := make(map[string]interface{})
 	err = json.Unmarshal(res, &createdProject)
 	if err != nil {
-		return fmt.Errorf("Unexpected result from GitLab API: %s", err)
+		return fmt.Errorf("unexpected result from GitLab API: %s", err)
 	}
 	fmt.Fprintf(out, `Project '%s' created
 Clone via SSH: %s
@@ -30,7 +31,6 @@ Clone via HTTP: %s
 		createdProject["name"], createdProject["ssh_url_to_repo"], createdProject["http_url_to_repo"])
 
 	return nil
-
 }
 
 func NewCommand(client api.Client) *cobra.Command {

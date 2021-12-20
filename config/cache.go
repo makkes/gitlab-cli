@@ -46,7 +46,7 @@ func (c *MapCache) MarshalJSON() ([]byte, error) {
 	return json.Marshal(c.data)
 }
 
-// UnmarshalJSON makes Cache implement json.Unmarshaler
+// UnmarshalJSON makes Cache implement json.Unmarshaler.
 func (c *MapCache) UnmarshalJSON(data []byte) error {
 	aux := make(map[string]map[string]string)
 	if err := json.Unmarshal(data, &aux); err != nil {

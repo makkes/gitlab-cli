@@ -7,12 +7,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/makkes/gitlab-cli/cmd/get/output"
-
-	"github.com/makkes/gitlab-cli/table"
+	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/spf13/cobra"
+	"github.com/makkes/gitlab-cli/cmd/get/output"
+	"github.com/makkes/gitlab-cli/table"
 )
 
 func issuesCommand(scope string, format string, client api.Client, all bool, page int, out io.Writer) error {
@@ -35,7 +34,7 @@ func issuesCommand(scope string, format string, client api.Client, all bool, pag
 		return err
 	}
 
-	return output.NewPrinter().Print(format, out, func() error {
+	return output.NewPrinter(out).Print(format, func() error {
 		table.PrintIssues(out, issues)
 		return nil
 	}, func() error {

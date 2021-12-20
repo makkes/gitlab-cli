@@ -182,7 +182,6 @@ func PrintProjects(out io.Writer, ps []api.Project) {
 			pad(p.Name, widths["name"]),
 			pad(p.URL, widths["url"]),
 			pad(p.SSHGitURL, widths["clone"]))
-
 	}
 }
 
@@ -203,7 +202,6 @@ func PrintIssues(out io.Writer, issues []api.Issue) {
 			pad(title, widths["title"]),
 			pad(i.State, widths["state"]),
 			pad(i.URL, widths["url"]))
-
 	}
 }
 

@@ -7,8 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func NewCommand(client api.Client) *cobra.Command {
@@ -23,11 +24,15 @@ func NewCommand(client api.Client) *cobra.Command {
 			}
 			pipeline, err := client.GetPipelineDetails(ids[0], ids[1])
 			if err != nil {
-				return fmt.Errorf("Cannot show pipeline: %s", err)
+				return fmt.Errorf("cannot show pipeline: %s", err)
 			}
 			var out bytes.Buffer
-			json.Indent(&out, pipeline, "", "    ")
-			out.WriteTo(os.Stdout)
+			if err := json.Indent(&out, pipeline, "", "    "); err != nil {
+				return err
+			}
+			if _, err := out.WriteTo(os.Stdout); err != nil {
+				return nil
+			}
 			fmt.Println()
 			return nil
 		},
