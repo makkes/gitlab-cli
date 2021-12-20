@@ -10,8 +10,8 @@ func NewCommand(rootCmd *cobra.Command) *cobra.Command {
 	return &cobra.Command{
 		Use:   "zsh",
 		Short: "generate zsh completion",
-		Run: func(cmd *cobra.Command, args []string) {
-			rootCmd.GenZshCompletion(os.Stdout)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return rootCmd.GenZshCompletion(os.Stdout)
 		},
 	}
 }

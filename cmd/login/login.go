@@ -3,9 +3,10 @@ package login
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
@@ -20,7 +21,7 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 			}
 			username, err := client.Login(args[0], url)
 			if err != nil {
-				return fmt.Errorf("Cannot login to %s: %s", url, err)
+				return fmt.Errorf("cannot login to %s: %s", url, err)
 			}
 			fmt.Printf("Logged in as %s\n", username)
 			cfg.Write()

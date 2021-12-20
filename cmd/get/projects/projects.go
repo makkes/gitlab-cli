@@ -7,14 +7,21 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/get/output"
 	"github.com/makkes/gitlab-cli/config"
 	"github.com/makkes/gitlab-cli/table"
-	"github.com/spf13/cobra"
 )
 
-func projectsCommand(client api.Client, cfg config.Config, format string, page int, membership bool, out io.Writer) error {
+func projectsCommand(
+	client api.Client,
+	cfg config.Config,
+	format string,
+	page int,
+	membership bool,
+	out io.Writer) error {
 	var path string
 	if membership {
 		path = fmt.Sprintf("/projects?membership=true&page=%d", page)
@@ -27,7 +34,7 @@ func projectsCommand(client api.Client, cfg config.Config, format string, page i
 		if status == 404 {
 			return fmt.Errorf("cannot list projects: User %s not found. Please check your configuration", cfg.Get("user"))
 		}
-		return fmt.Errorf("Cannot list projects: %s", err)
+		return fmt.Errorf("cannot list projects: %s", err)
 	}
 	projects := make([]api.Project, 0)
 	err = json.Unmarshal(resp, &projects)
@@ -41,7 +48,7 @@ func projectsCommand(client api.Client, cfg config.Config, format string, page i
 	}
 	cfg.Write()
 
-	return output.NewPrinter().Print(format, out, func() error {
+	return output.NewPrinter(out).Print(format, func() error {
 		table.PrintProjects(out, projects)
 		return nil
 	}, func() error {

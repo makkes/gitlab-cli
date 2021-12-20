@@ -6,11 +6,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/makkes/gitlab-cli/cmd/get/output"
-	"github.com/makkes/gitlab-cli/table"
+	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/spf13/cobra"
+	"github.com/makkes/gitlab-cli/cmd/get/output"
+	"github.com/makkes/gitlab-cli/table"
 )
 
 func NewCommand(client api.Client, format *string) *cobra.Command {
@@ -53,8 +53,9 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 			}
 
 			return output.NewPrinter(
+				os.Stdout,
 				output.NoListWithSingleEntry(),
-			).Print(*format, os.Stdout, func() error {
+			).Print(*format, func() error {
 				table.PrintVars(os.Stdout, vars)
 				return nil
 			}, func() error {

@@ -1,11 +1,12 @@
 package create
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	createproj "github.com/makkes/gitlab-cli/cmd/create/project"
 	"github.com/makkes/gitlab-cli/cmd/create/vars"
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {

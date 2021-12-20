@@ -12,7 +12,7 @@ import (
 var configFile = ".gitlab-cli.json"
 var Version = "none"
 
-// keys for the configuration
+// keys for the configuration.
 const (
 	User  = "user"
 	Token = "token"
@@ -57,7 +57,7 @@ func (c *inMemoryConfig) MarshalJSON() ([]byte, error) {
 	})
 }
 
-// UnmarshalJSON makes Cache implement json.Unmarshaler
+// UnmarshalJSON makes Cache implement json.Unmarshaler.
 func (c *inMemoryConfig) UnmarshalJSON(data []byte) error {
 	aux := &struct {
 		Version int

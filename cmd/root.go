@@ -3,11 +3,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/makkes/gitlab-cli/cmd/delete"
+	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
+	apicmd "github.com/makkes/gitlab-cli/cmd/api"
 	"github.com/makkes/gitlab-cli/cmd/completion"
 	"github.com/makkes/gitlab-cli/cmd/create"
+	"github.com/makkes/gitlab-cli/cmd/delete"
 	"github.com/makkes/gitlab-cli/cmd/get"
 	"github.com/makkes/gitlab-cli/cmd/inspect"
 	"github.com/makkes/gitlab-cli/cmd/login"
@@ -15,7 +17,6 @@ import (
 	"github.com/makkes/gitlab-cli/cmd/update"
 	"github.com/makkes/gitlab-cli/cmd/version"
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -24,9 +25,9 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute(cfg config.Config) {
-	var apiClient api.Client
-	apiClient = api.NewAPIClient(cfg)
+	apiClient := api.NewAPIClient(cfg)
 
+	rootCmd.AddCommand(apicmd.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(inspect.NewCommand(apiClient))
 	rootCmd.AddCommand(get.NewCommand(apiClient, cfg))
 	rootCmd.AddCommand(create.NewCommand(apiClient, cfg))

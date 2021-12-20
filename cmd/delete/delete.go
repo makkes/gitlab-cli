@@ -1,10 +1,11 @@
 package delete
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/delete/variable"
 	"github.com/makkes/gitlab-cli/config"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client, cfg config.Config) *cobra.Command {

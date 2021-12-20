@@ -1,9 +1,10 @@
 package completion
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/makkes/gitlab-cli/cmd/completion/bash"
 	"github.com/makkes/gitlab-cli/cmd/completion/zsh"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(rootCmd *cobra.Command) *cobra.Command {

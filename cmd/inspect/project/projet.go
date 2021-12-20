@@ -7,20 +7,25 @@ import (
 	"io"
 	"os"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func inspectCommand(client api.Client, args []string, out io.Writer) error {
 	project, err := client.FindProjectDetails(args[0])
 	if err != nil {
-		return fmt.Errorf("Cannot show project: %s", err)
+		return fmt.Errorf("cannot show project: %s", err)
 	}
 	var buf bytes.Buffer
-	json.Indent(&buf, project, "", "    ")
-	buf.WriteTo(out)
-	out.Write([]byte("\n"))
-	return nil
+	if err := json.Indent(&buf, project, "", "    "); err != nil {
+		return err
+	}
+	if _, err := buf.WriteTo(out); err != nil {
+		return err
+	}
+	_, err = out.Write([]byte("\n"))
+	return err
 }
 
 func NewCommand(client api.Client) *cobra.Command {

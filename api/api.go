@@ -42,7 +42,7 @@ func NewAPIClient(cfg config.Config) *HTTPClient {
 }
 
 func (c HTTPClient) parse(input string) string {
-	return strings.Replace(input, "${user}", c.config.Get(config.User), -1)
+	return strings.ReplaceAll(input, "${user}", c.config.Get(config.User))
 }
 
 func (c *HTTPClient) Login(token, url string) (string, error) {
@@ -100,7 +100,7 @@ func (c HTTPClient) FindProjectDetails(nameOrID string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(projects) <= 0 {
+	if len(projects) == 0 {
 		return nil, fmt.Errorf("Project '%s' not found", nameOrID)
 	}
 	c.config.Cache().Put("projects", nameOrID, strconv.Itoa(int((projects[0]["id"].(float64)))))

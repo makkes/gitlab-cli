@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/blang/semver/v4"
-
 	"github.com/mmcdole/gofeed"
 )
 
@@ -15,7 +14,7 @@ func LatestVersion(repo string, currentVersion semver.Version, upgradeMajor, inc
 	if err != nil {
 		return "", err
 	}
-	if len(feed.Items) <= 0 {
+	if len(feed.Items) == 0 {
 		return "", fmt.Errorf("no entry in releases feed")
 	}
 

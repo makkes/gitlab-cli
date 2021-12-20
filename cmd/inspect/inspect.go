@@ -1,12 +1,12 @@
 package inspect
 
 import (
+	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/cmd/inspect/issue"
 	"github.com/makkes/gitlab-cli/cmd/inspect/pipeline"
 	"github.com/makkes/gitlab-cli/cmd/inspect/project"
-
-	"github.com/makkes/gitlab-cli/api"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(client api.Client) *cobra.Command {

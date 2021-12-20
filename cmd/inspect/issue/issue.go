@@ -8,8 +8,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
+
+	"github.com/makkes/gitlab-cli/api"
 )
 
 func inspectCommand(client api.Client, args []string, out io.Writer) error {
@@ -21,16 +22,19 @@ func inspectCommand(client api.Client, args []string, out io.Writer) error {
 	resp, status, err := client.Get("/projects/" + ids[0] + "/issues/" + ids[1])
 	if err != nil {
 		if status == 404 {
-			return fmt.Errorf("Issue %s not found", args[0])
+			return fmt.Errorf("issue %s not found", args[0])
 		}
 		return err
 	}
 	var buf bytes.Buffer
-	json.Indent(&buf, resp, "", "    ")
-	buf.WriteTo(out)
-	out.Write([]byte("\n"))
-	return nil
-
+	if err := json.Indent(&buf, resp, "", "    "); err != nil {
+		return err
+	}
+	if _, err := buf.WriteTo(out); err != nil {
+		return err
+	}
+	_, err = out.Write([]byte("\n"))
+	return err
 }
 
 func NewCommand(client api.Client) *cobra.Command {
