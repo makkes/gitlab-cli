@@ -1,4 +1,4 @@
-DEFAULT_TARGET: build
+.DEFAULT_GOAL := build
 
 VERSION := $(shell git describe --tags $(git rev-parse HEAD))
 LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION)
