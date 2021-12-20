@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
@@ -25,12 +24,14 @@ func NewCommand(client api.Client, project *string) *cobra.Command {
 				return fmt.Errorf("Cannot create variable: %s", err)
 			}
 
-			body := fmt.Sprintf("key=%s&value=%s", url.QueryEscape(args[0]), url.QueryEscape(args[1]))
-			if len(args) == 3 {
-				body += fmt.Sprintf("&environment_scope=%s", url.QueryEscape(args[2]))
+			body := map[string]interface{}{
+				"key":   url.QueryEscape(args[0]),
+				"value": url.QueryEscape(args[1]),
 			}
-			_, _, err = client.Post("/projects/"+strconv.Itoa(project.ID)+"/variables",
-				strings.NewReader(body))
+			if len(args) == 3 {
+				body["environment_scope"] = url.QueryEscape(args[2])
+			}
+			_, _, err = client.Post("/projects/"+strconv.Itoa(project.ID)+"/variables", body)
 			if err != nil {
 				return fmt.Errorf("Cannot create variable: %s", err)
 			}

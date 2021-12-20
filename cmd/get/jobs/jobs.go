@@ -55,7 +55,7 @@ func NewCommand(client api.Client, format *string) *cobra.Command {
 				jobs[idx].ProjectID = projectID
 			}
 
-			return output.Print(resp, *format, os.Stdout, func() error {
+			return output.NewPrinter().Print(*format, os.Stdout, func() error {
 				table.PrintJobs(jobs)
 				return nil
 			}, func() error {

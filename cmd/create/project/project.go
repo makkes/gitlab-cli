@@ -6,14 +6,15 @@ import (
 	"io"
 	"net/url"
 	"os"
-	"strings"
 
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/spf13/cobra"
 )
 
 func createCommand(client api.Client, args []string, out io.Writer) error {
-	res, _, err := client.Post("/projects", strings.NewReader(fmt.Sprintf("name=%s", url.QueryEscape(args[0]))))
+	res, _, err := client.Post("/projects", map[string]interface{}{
+		"name": url.QueryEscape(args[0]),
+	})
 	if err != nil {
 		return fmt.Errorf("Cannot create project: %s", err)
 	}

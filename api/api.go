@@ -1,10 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -18,7 +18,7 @@ var ErrNotLoggedIn = errors.New("you are not logged in")
 
 type Client interface {
 	Get(path string) ([]byte, int, error)
-	Post(path string, body io.Reader) ([]byte, int, error)
+	Post(path string, body interface{}) ([]byte, int, error)
 	Delete(path string) (int, error)
 	FindProject(nameOrID string) (*Project, error)
 	FindProjectDetails(nameOrID string) ([]byte, error)
@@ -154,15 +154,20 @@ func (c HTTPClient) Get(path string) ([]byte, int, error) {
 	return body, 0, nil
 }
 
-func (c HTTPClient) Post(path string, reqBody io.Reader) ([]byte, int, error) {
+func (c HTTPClient) Post(path string, reqBody interface{}) ([]byte, int, error) {
 	if !c.isLoggedIn() {
 		return nil, 0, ErrNotLoggedIn
 	}
-	req, err := http.NewRequest("POST", c.config.Get(config.URL)+c.basePath+c.parse(path), reqBody)
+	var bodyBuf bytes.Buffer
+	if err := json.NewEncoder(&bodyBuf).Encode(reqBody); err != nil {
+		return nil, 0, fmt.Errorf("could not encode JSON body: %w", err)
+	}
+	req, err := http.NewRequest("POST", c.config.Get(config.URL)+c.basePath+c.parse(path), &bodyBuf)
 	if err != nil {
 		return nil, 0, err
 	}
-	req.Header.Add("Private-Token", c.config.Get(config.Token))
+	req.Header.Set("Private-Token", c.config.Get(config.Token))
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, 0, err

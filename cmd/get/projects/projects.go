@@ -41,7 +41,7 @@ func projectsCommand(client api.Client, cfg config.Config, format string, page i
 	}
 	cfg.Write()
 
-	return output.Print(resp, format, out, func() error {
+	return output.NewPrinter().Print(format, out, func() error {
 		table.PrintProjects(out, projects)
 		return nil
 	}, func() error {

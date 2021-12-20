@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 	"text/template"
 
@@ -13,11 +14,39 @@ import (
 
 var ErrUnknownFormatRequested error = fmt.Errorf("unknown output format requested")
 
-func Print(b []byte, format string, out io.Writer, tableFunc func() error, nameFunc func() error, items interface{}) error {
+type Printer struct {
+	noListWithSingleEntry bool
+}
+
+type Opt func(p *Printer)
+
+func NewPrinter(opts ...Opt) Printer {
+	p := Printer{}
+	for _, opt := range opts {
+		opt(&p)
+	}
+	return p
+}
+
+func NoListWithSingleEntry() Opt {
+	return func(p *Printer) {
+		p.noListWithSingleEntry = true
+	}
+}
+
+func (p Printer) Print(format string, out io.Writer, tableFunc func() error, nameFunc func() error, items interface{}) error {
+	if p.noListWithSingleEntry && reflect.TypeOf(items).Kind() == reflect.Slice && reflect.ValueOf(items).Len() == 1 {
+		items = reflect.ValueOf(items).Index(0).Interface()
+	}
+
 	switch {
 	case format == "json":
 		var buf bytes.Buffer
-		json.Indent(&buf, b, "", "    ")
+		enc := json.NewEncoder(&buf)
+		enc.SetIndent("", "    ")
+		if err := enc.Encode(items); err != nil {
+			return fmt.Errorf("error encoding items: %w", err)
+		}
 		buf.WriteTo(out)
 		out.Write([]byte("\n"))
 		return nil
