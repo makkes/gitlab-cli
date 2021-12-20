@@ -5,8 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/makkes/gitlab-cli/mock"
 	"github.com/stretchr/testify/require"
+
+	"github.com/makkes/gitlab-cli/mock"
 )
 
 func TestClientError(t *testing.T) {
@@ -173,7 +174,7 @@ func TestTableOutput(t *testing.T) {
 123             broken arrow                                                                                `+
 		`                                                  
 456             almanac                                                                                     `+
-`                                                  
+		`                                                  
 `, out.String())
 }
 

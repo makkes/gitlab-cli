@@ -5,8 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/makkes/gitlab-cli/mock"
 	"github.com/stretchr/testify/require"
+
+	"github.com/makkes/gitlab-cli/mock"
 )
 
 func TestWrongArgFormat(t *testing.T) {
