@@ -2,21 +2,14 @@ name: Test
 on: [push]
 jobs:
   test:
-    strategy:
-        matrix:
-            go: ['1.x']
-            os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: asdf-vm/actions/install@v1
     - name: Lint code
-      if: runner.os == 'Linux'
       run: make lint
     - name: pre-commit
       uses: pre-commit/action@v2.0.3
-      if: runner.os == 'Linux'
       with:
         extra_args: --all-files
       env:
