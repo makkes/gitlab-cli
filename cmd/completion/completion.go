@@ -12,11 +12,11 @@ func NewCommand(rootCmd *cobra.Command) *cobra.Command {
 		Use:   "completion",
 		Short: "Generate shell completion scripts",
 		Long: `Generate shell completion scripts
-		
+
 To load completions in the current shell run
 
 source <(gitlab completion SHELL)
-		
+
 To configure your bash shell to load completions for each session add the
 following line to your ~/.bashrc or ~/.profile:
 
