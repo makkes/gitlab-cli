@@ -2,3 +2,6 @@
 /gitlab_v*
 cover.out
 /build
+
+# output of goreleaser
+/dist/

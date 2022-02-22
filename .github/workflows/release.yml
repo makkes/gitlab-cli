@@ -10,23 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        with:
+          fetch-depth: 0
+      - name: Install asdf and tools
+        uses: asdf-vm/actions/install@v1
+      - name: create release
+        run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            TBD
-          draft: false
-          prerelease: false
-      - name: Generate artifacts
-        uses: skx/github-action-build@5ca2e55b7ba4583d27b0e4c256685dd7fffb4acf
-      - name: Upload artifacts
-        uses: alexellis/upload-assets@0.2.3
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          asset_paths: '["./build/gitlab_*"]'

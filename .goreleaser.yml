@@ -1,0 +1,56 @@
+project_name: gitlab
+
+changelog:
+  use: github
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+  filters:
+    exclude:
+      - '^docs:'
+      - '^chore:'
+      - '^build:'
+
+release:
+  footer: |
+    ### Summary
+    **Full Changelog**: https://github.com/makkes/gitlab-cli/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+builds:
+  - id: gitlab
+    main: ./cmd/gitlab
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X 'github.com/makkes/gitlab-cli/config.Version={{ .Version }}'
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
+universal_binaries:
+  - replace: true
+    id: gitlab
+archives:
+  - name_template: '{{ .ProjectName }}_v{{trimprefix .Version "v"}}_{{ .Os }}_{{ .Arch }}'
+  # This is a hack documented in https://github.com/goreleaser/goreleaser/blob/df0216d5855e9283d2106fb5acdb0e7b528a56e8/www/docs/customization/archive.md#packaging-only-the-binaries
+    files:
+      - none*
+    format_overrides:
+      - goos: windows
+        format: zip
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incminor .Tag }}-dev"

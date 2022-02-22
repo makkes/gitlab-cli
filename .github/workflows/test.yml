@@ -9,20 +9,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test Go ${{ matrix.go }} on ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
-    - uses: actions/setup-go@37335c7bb261b353407cff977110895fa0b4f7d8
-      with:
-          go-version: ${{ matrix.go }}
-    - name: Get golangci-lint on Windows
-      if: runner.os == 'Windows'
-      shell: bash
-      run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/bin v1.43.0
-    - name: Get golangci-lint on macOS and Linux
-      if: runner.os == 'macOS' || runner.os == 'Linux'
-      shell: bash
-      run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/local/bin v1.43.0
+    - uses: actions/checkout@v2
+    - uses: asdf-vm/actions/install@v1
     - name: Lint code
-      if: runner.os == 'macOS' || runner.os == 'Linux'
+      if: runner.os == 'Linux'
       run: make lint
+    - name: pre-commit
+      uses: pre-commit/action@v2.0.3
+      if: runner.os == 'Linux'
+      with:
+        extra_args: --all-files
+      env:
+        SKIP: no-commit-to-branch,golangci-lint
     - name: Run unit tests
       run: make test

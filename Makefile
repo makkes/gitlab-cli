@@ -1,29 +1,4 @@
-.DEFAULT_GOAL := build
-
-VERSION := $(shell git describe --tags $(git rev-parse HEAD))
-LDFLAGS := -X github.com/makkes/gitlab-cli/config.Version=$(VERSION)
-
-PLATFORMS := windows linux darwin
-os = $(word 1, $@)
-
-CURRENT_DIR=$(shell pwd)
-BUILD_DIR=build
-BINARY_NAME=gitlab
-SRCS := $(shell find . -type f -name '*.go' -not -path './vendor/*')
-
-.PHONY: build
-build:
-	mkdir -p $(BUILD_DIR)
-	go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/gitlab
-
-.PHONY: $(PLATFORMS)
-$(PLATFORMS):
-	mkdir -p $(BUILD_DIR)
-	GOOS=$(os) GOARCH=amd64 go build -v -ldflags '$(LDFLAGS)' -o $(BUILD_DIR)/$(BINARY_NAME)_$(VERSION)_$(os)_amd64 ./cmd/gitlab
-
-.PHONY: install
-install:
-	go install -ldflags '$(LDFLAGS)' ./cmd/gitlab
+.DEFAULT_GOAL := build-snapshot
 
 .PHONY: lint
 lint:
@@ -32,9 +7,47 @@ lint:
 test:
 	go test ./...
 
-.PHONY: clean
-clean:
-	rm -rf ./$(BUILD_DIR)
+GORELEASER_PARALLELISM ?= $(shell nproc --ignore=1)
+GORELEASER_DEBUG ?= false
+
+export GORELEASER_CURRENT_TAG=$(GIT_TAG)
+
+ifneq ($(shell git status --porcelain 2>/dev/null; echo $$?), 0)
+	export GIT_TREE_STATE := dirty
+else
+	export GIT_TREE_STATE :=
+endif
+
+.PHONY: build-snapshot
+build-snapshot: ## Builds a snapshot with goreleaser
+build-snapshot:
+	goreleaser --debug=$(GORELEASER_DEBUG) \
+		build \
+		--snapshot \
+		--rm-dist \
+		--parallelism=$(GORELEASER_PARALLELISM) \
+		--single-target \
+		--skip-post-hooks
 
 .PHONY: release
-release: windows linux darwin
+release: ## Builds a release with goreleaser
+release:
+	goreleaser --debug=$(GORELEASER_DEBUG) \
+		release \
+		--rm-dist \
+		--parallelism=$(GORELEASER_PARALLELISM)
+
+.PHONY: release-snapshot
+release-snapshot: ## Builds a snapshot release with goreleaser
+release-snapshot:
+	goreleaser --debug=$(GORELEASER_DEBUG) \
+		release \
+		--snapshot \
+		--skip-publish \
+		--rm-dist \
+		--parallelism=$(GORELEASER_PARALLELISM)
+
+.PHONY: mod-tidy
+mod-tidy: ## Run go mod tidy
+	go mod tidy -v -compat=1.17
+	go mod verify

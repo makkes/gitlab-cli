@@ -4,7 +4,7 @@ repos:
   - id: go-mod-tidy
     name: go mod tidy
     entry: make mod-tidy
-    files: "(.*\\.go$|go.mod|go.sum)"
+    files: "(.*\\.go|go.mod|go.sum)$"
     language: system
     stages: [commit]
     pass_filenames: false
@@ -12,10 +12,10 @@ repos:
     name: golangci-lint
     entry: make lint
     language: system
-    files: "(.*\\.go$|go.mod|go.sum)"
+    files: "(.*\\.go|go.mod|go.sum)$"
     pass_filenames: false
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.0.1
+  rev: v4.1.0
   hooks:
   - id: trailing-whitespace
     stages: [commit]
@@ -55,7 +55,7 @@ repos:
   - id: script-must-have-extension
     stages: [commit]
 - repo: https://github.com/shellcheck-py/shellcheck-py
-  rev: v0.8.0.1
+  rev: v0.8.0.3
   hooks:
   - id: shellcheck
     stages: [commit]
