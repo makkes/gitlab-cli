@@ -11,6 +11,14 @@ type Project struct {
 	LastActivityAt string `json:"last_activity_at"`
 }
 
+type ProjectAccessToken struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Scopes    []string  `json:"scopes"`
+	Token     string    `json:"token,omitempty"`
+}
+
 type Issue struct {
 	ProjectID int    `json:"project_id"`
 	ID        int    `json:"iid"`

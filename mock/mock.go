@@ -11,8 +11,14 @@ type Client struct {
 	Err    error
 }
 
+var _ api.Client = Client{}
+
 func (m Client) Get(path string) ([]byte, int, error) {
 	return m.Res, m.Status, m.Err
+}
+
+func (m Client) GetAccessTokens(pid string) ([]api.ProjectAccessToken, error) {
+	return nil, nil
 }
 
 func (m Client) Post(path string, body interface{}) ([]byte, int, error) {

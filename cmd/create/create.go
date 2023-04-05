@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
+	"github.com/makkes/gitlab-cli/cmd/create/access_token"
 	createproj "github.com/makkes/gitlab-cli/cmd/create/project"
 	"github.com/makkes/gitlab-cli/cmd/create/vars"
 	"github.com/makkes/gitlab-cli/config"
@@ -20,6 +21,7 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 
 	cmd.AddCommand(createproj.NewCommand(client))
 	cmd.AddCommand(vars.NewCommand(client, project))
+	cmd.AddCommand(access_token.NewCommand(client))
 
 	return cmd
 }

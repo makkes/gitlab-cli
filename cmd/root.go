@@ -13,6 +13,7 @@ import (
 	"github.com/makkes/gitlab-cli/cmd/get"
 	"github.com/makkes/gitlab-cli/cmd/inspect"
 	"github.com/makkes/gitlab-cli/cmd/login"
+	"github.com/makkes/gitlab-cli/cmd/revoke"
 	"github.com/makkes/gitlab-cli/cmd/status"
 	"github.com/makkes/gitlab-cli/cmd/update"
 	"github.com/makkes/gitlab-cli/cmd/version"
@@ -38,6 +39,8 @@ func Execute(cfg config.Config) {
 	rootCmd.AddCommand(completion.NewCommand(rootCmd))
 	rootCmd.AddCommand(version.NewCommand())
 	rootCmd.AddCommand(update.NewCommand())
+	rootCmd.AddCommand(revoke.NewCommand(apiClient))
+	
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

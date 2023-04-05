@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/makkes/gitlab-cli/config"
 )
@@ -24,7 +25,11 @@ type Client interface {
 	FindProjectDetails(nameOrID string) ([]byte, error)
 	Login(token, url string) (string, error)
 	GetPipelineDetails(projectID, pipelineID string) ([]byte, error)
+	GetAccessTokens(projectID string) ([]ProjectAccessToken, error)
+	CreateAccessToken(projectID int, name string, expires time.Time, scopes []string) (ProjectAccessToken, error)
 }
+
+var _ Client = &HTTPClient{}
 
 type HTTPClient struct {
 	basePath string
@@ -43,6 +48,106 @@ func NewAPIClient(cfg config.Config) *HTTPClient {
 
 func (c HTTPClient) parse(input string) string {
 	return strings.ReplaceAll(input, "${user}", c.config.Get(config.User))
+}
+
+func (c HTTPClient) CreateAccessToken(pid int, name string, exp time.Time, scopes []string) (ProjectAccessToken, error) {
+	pat := ProjectAccessToken{
+		Name:      name,
+		ExpiresAt: exp,
+		Scopes:    scopes,
+	}
+
+	res, _, err := c.Post(fmt.Sprintf("/projects/%s/access_tokens", url.PathEscape(strconv.Itoa(pid))), pat)
+	if err != nil {
+		return ProjectAccessToken{}, fmt.Errorf("API request failed: %w", err)
+	}
+
+	var dec map[string]interface{}
+	if err := json.Unmarshal(res, &dec); err != nil {
+		return ProjectAccessToken{}, fmt.Errorf("failed unmarshalling response: %w", err)
+	}
+	pat, err = decodePAT(dec)
+	if err != nil {
+		return ProjectAccessToken{}, fmt.Errorf("failed decoding response: %w", err)
+	}
+
+	return pat, nil
+}
+
+func (c HTTPClient) GetAccessTokens(pid string) ([]ProjectAccessToken, error) {
+	resp, _, err := c.Get(fmt.Sprintf("/projects/%s/access_tokens", url.PathEscape(pid)))
+	if err != nil {
+		return nil, err
+	}
+
+	var decObj []map[string]interface{}
+	err = json.Unmarshal(resp, &decObj)
+	if err != nil {
+		return nil, fmt.Errorf("failed unmarshalling response: %w", err)
+	}
+
+	atl := make([]ProjectAccessToken, len(decObj))
+	for idx, obj := range decObj {
+		pat, err := decodePAT(obj)
+		if err != nil {
+			return nil, fmt.Errorf("failed decoding token: %w", err)
+		}
+		atl[idx] = pat
+	}
+
+	return atl, nil
+}
+
+func decodePAT(obj map[string]interface{}) (ProjectAccessToken, error) {
+	name, ok := obj["name"].(string)
+	if !ok {
+		return ProjectAccessToken{}, fmt.Errorf("failed decoding 'name' field: %v", obj["name"])
+	}
+
+	id, ok := obj["id"].(float64)
+	if !ok {
+		return ProjectAccessToken{}, fmt.Errorf("failed decoding 'id' field: %v", obj["id"])
+	}
+
+	expires, ok := obj["expires_at"].(string)
+	if !ok {
+		return ProjectAccessToken{}, fmt.Errorf("failed decoding 'expires' field: %v", obj["expires"])
+	}
+	et, err := time.Parse("2006-01-02", expires)
+	if err != nil {
+		return ProjectAccessToken{}, fmt.Errorf("failed parsing 'expires' field: %w", err)
+	}
+
+	scopesIf, ok := obj["scopes"].([]interface{})
+	if !ok {
+		return ProjectAccessToken{}, fmt.Errorf("failed decoding 'scopes' field: %v", obj["scopes"])
+	}
+
+	scopes := make([]string, len(scopesIf))
+	for idx, scopeIf := range scopesIf {
+		scope, ok := scopeIf.(string)
+		if !ok {
+			return ProjectAccessToken{}, fmt.Errorf("failed decoding scope: %v", scopeIf)
+		}
+		scopes[idx] = scope
+	}
+
+	var token string
+	if obj["token"] != nil {
+		var ok bool
+		token, ok = obj["token"].(string)
+		if !ok {
+			return ProjectAccessToken{}, fmt.Errorf("failed decoding 'token' field: %v", obj["token"])
+		}
+	}
+
+	return ProjectAccessToken{
+		ID:        int(id),
+		Name:      name,
+		ExpiresAt: et,
+		Scopes:    scopes,
+		Token:     token,
+	}, nil
 }
 
 func (c *HTTPClient) Login(token, url string) (string, error) {

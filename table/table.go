@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/makkes/gitlab-cli/api"
@@ -182,6 +183,60 @@ func PrintProjects(out io.Writer, ps []api.Project) {
 			pad(p.Name, widths["name"]),
 			pad(p.URL, widths["url"]),
 			pad(p.SSHGitURL, widths["clone"]))
+	}
+}
+
+func calcProjectAccessTokenColumnWidths(atl []api.ProjectAccessToken) map[string]int {
+	res := make(map[string]int)
+	res["id"] = 10
+	res["name"] = 20
+	res["expires"] = 15
+	res["scopes"] = 5
+
+	for _, t := range atl {
+		w := len(fmt.Sprintf("%d", t.ID))
+		if w > res["id"] {
+			res["id"] = w
+		}
+
+		w = len(t.Name)
+		if w > res["name"] {
+			res["name"] = w
+		}
+
+		w = len(t.ExpiresAt.Format(time.Stamp))
+		if w > res["expires"] {
+			res["expires"] = w
+		}
+
+		w = len(strings.Join(t.Scopes, ","))
+		if w > res["scopes"] {
+			res["scopes"] = w
+		}
+	}
+	return res
+}
+
+func PrintProjectAccessTokens(out io.Writer, atl []api.ProjectAccessToken) {
+	widths := calcProjectAccessTokenColumnWidths(atl)
+	fmt.Fprintf(out, "%s  %s  %s  %s\n",
+		pad("ID", widths["id"]),
+		pad("NAME", widths["name"]),
+		pad("EXPIRES AT", widths["expires"]),
+		pad("SCOPES", widths["scopes"]),
+	)
+
+	for _, t := range atl {
+		name := t.Name
+		if len(name) > widths["name"] {
+			name = name[0:widths["name"]-1] + "…"
+		}
+		fmt.Fprintf(out, "%s  %s  %s  %s\n",
+			pad(fmt.Sprintf("%d", t.ID), widths["id"]),
+			pad(name, widths["name"]),
+			pad(t.ExpiresAt.Format(time.Stamp), widths["expires"]),
+			pad(strings.Join(t.Scopes, ","), widths["scopes"]),
+		)
 	}
 }
 
