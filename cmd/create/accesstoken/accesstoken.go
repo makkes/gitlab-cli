@@ -1,4 +1,4 @@
-package access_token
+package accesstoken
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
 func randSeq(n int) string {
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+		b[i] = letters[rand.Intn(len(letters))] // nolint:gosec
 	}
 	return string(b)
 }

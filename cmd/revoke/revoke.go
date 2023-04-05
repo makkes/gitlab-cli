@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/revoke/access_token"
+	"github.com/makkes/gitlab-cli/cmd/revoke/accesstoken"
 )
 
 func NewCommand(client api.Client) *cobra.Command {
@@ -13,7 +13,7 @@ func NewCommand(client api.Client) *cobra.Command {
 		Short: "Revoke an object, e.g. a project access token",
 	}
 
-	cmd.AddCommand(access_token.NewCommand(client))
+	cmd.AddCommand(accesstoken.NewCommand(client))
 
 	return cmd
 }

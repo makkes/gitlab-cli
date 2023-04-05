@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/makkes/gitlab-cli/api"
-	"github.com/makkes/gitlab-cli/cmd/get/access_tokens"
+	"github.com/makkes/gitlab-cli/cmd/get/accesstokens"
 	"github.com/makkes/gitlab-cli/cmd/get/issues"
 	"github.com/makkes/gitlab-cli/cmd/get/jobs"
 	"github.com/makkes/gitlab-cli/cmd/get/logs"
@@ -30,7 +30,7 @@ func NewCommand(client api.Client, cfg config.Config) *cobra.Command {
 	cmd.AddCommand(vars.NewCommand(client, format))
 	cmd.AddCommand(jobs.NewCommand(client, format))
 	cmd.AddCommand(logs.NewCommand(client))
-	cmd.AddCommand(access_tokens.NewCommand(client, format))
+	cmd.AddCommand(accesstokens.NewCommand(client, format))
 
 	return cmd
 }

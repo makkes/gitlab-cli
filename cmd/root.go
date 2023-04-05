@@ -40,7 +40,7 @@ func Execute(cfg config.Config) {
 	rootCmd.AddCommand(version.NewCommand())
 	rootCmd.AddCommand(update.NewCommand())
 	rootCmd.AddCommand(revoke.NewCommand(apiClient))
-	
+
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
