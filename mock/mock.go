@@ -1,6 +1,8 @@
 package mock
 
 import (
+	"time"
+
 	"github.com/makkes/gitlab-cli/api"
 	"github.com/makkes/gitlab-cli/config"
 )
@@ -15,6 +17,10 @@ var _ api.Client = Client{}
 
 func (m Client) Get(path string) ([]byte, int, error) {
 	return m.Res, m.Status, m.Err
+}
+
+func (m Client) CreateAccessToken(projectID int, name string, expires time.Time, scopes []string) (api.ProjectAccessToken, error) {
+	return api.ProjectAccessToken{}, nil
 }
 
 func (m Client) GetAccessTokens(pid string) ([]api.ProjectAccessToken, error) {
